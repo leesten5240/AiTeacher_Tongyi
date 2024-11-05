@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>AI Chat</title>
+	</head>
+	<body>
+		<h1>AI Chat</h1>
+		<form id="chat-form">
+			<label for="text-input">Text:</label><br>
+			<input type="text" id="text-input" name="text"><br>
+			<label for="image-url">Image URL:</label><br>
+			<input type="text" id="image-url" name="image-url"><br>
+			<button type="submit">Send</button>
+		</form>
+		<div id="response"></div>
+
+		<script>
+			document.getElementById('chat-form').addEventListener('submit', function(event) {
+				event.preventDefault();
+				const text = document.getElementById('text-input').value;
+				const imageUrl = document.getElementById('image-url').value;
+
+				fetch('/process', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({
+							text: text,
+							image_url: imageUrl
+						})
+					})
+					.then(response => response.json())
+					.then(data => {
+						if (data.response) {
+							document.getElementById('response').innerText = data.response;
+						} else {
+							document.getElementById('response').innerText = 'Error: ' + data.error;
+						}
+					})
+					.catch(error => {
+						console.error('Error:', error);
+						document.getElementById('response').innerText = 'Error: ' + error;
+					});
+			});
+		</script>
+	</body>
+</html>
