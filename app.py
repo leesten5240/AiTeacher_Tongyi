@@ -1,6 +1,9 @@
 from flask import Flask, request, jsonify, render_template
 from openai import OpenAI
 import os
+import base64
+from io import BytesIO
+from PIL import Image
 
 app = Flask(__name__)
 
@@ -16,15 +19,24 @@ def index():
 
 @app.route('/process', methods=['POST'])
 def process():
-    data = request.json
-    text = data.get('text')
-    image_url = data.get('image_url')
+    text = request.form.get('text')
+    image_file = request.files.get('image')
+
+    if not image_file:
+        return jsonify({"error": "No image file provided"}), 400
+
+    # 将文件转换为base64编码的字符串
+    image_stream = BytesIO(image_file.read())
+    image = Image.open(image_stream)
+    buffered = BytesIO()
+    image.save(buffered, format="JPEG")
+    img_str = base64.b64encode(buffered.getvalue()).decode()
 
     # 构建消息列表
     messages = [
         {"role": "user", "content": [
             {"type": "text", "text": text},
-            {"type": "image_url", "image_url": {"url": image_url}}
+            {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{img_str}"}}
         ]}
     ]
 

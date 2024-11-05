@@ -7,11 +7,11 @@
 	</head>
 	<body>
 		<h1>AI Chat</h1>
-		<form id="chat-form">
+		<form id="chat-form" enctype="multipart/form-data">
 			<label for="text-input">Text:</label><br>
 			<input type="text" id="text-input" name="text"><br>
-			<label for="image-url">Image URL:</label><br>
-			<input type="text" id="image-url" name="image-url"><br>
+			<label for="image-input">Image:</label><br>
+			<input type="file" id="image-input" name="image" accept="image/*"><br>
 			<button type="submit">Send</button>
 		</form>
 		<div id="response"></div>
@@ -20,17 +20,19 @@
 			document.getElementById('chat-form').addEventListener('submit', function(event) {
 				event.preventDefault();
 				const text = document.getElementById('text-input').value;
-				const imageUrl = document.getElementById('image-url').value;
+				const fileInput = document.getElementById('image-input');
+				const file = fileInput.files[0];
+
+				const formData = new FormData();
+				formData.append('text', text);
+				formData.append('image', file);
 
 				fetch('/process', {
 						method: 'POST',
 						headers: {
-							'Content-Type': 'application/json'
+							// 不需要设置Content-Type，因为FormData会自动设置
 						},
-						body: JSON.stringify({
-							text: text,
-							image_url: imageUrl
-						})
+						body: formData
 					})
 					.then(response => response.json())
 					.then(data => {
