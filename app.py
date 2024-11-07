@@ -21,22 +21,28 @@ def index():
 def process():
     text = request.form.get('text')
     image_file = request.files.get('image')
+    image_url = request.form.get('image_url')
 
-    if not image_file:
-        return jsonify({"error": "No image file provided"}), 400
+    if not (image_file or image_url):
+        return jsonify({"error": "No image file or URL provided"}), 400
 
-    # 将文件转换为base64编码的字符串
-    image_stream = BytesIO(image_file.read())
-    image = Image.open(image_stream)
-    buffered = BytesIO()
-    image.save(buffered, format="JPEG")
-    img_str = base64.b64encode(buffered.getvalue()).decode()
+    if image_file:
+        # 处理本地上传的图片
+        image_stream = BytesIO(image_file.read())
+        image = Image.open(image_stream)
+        buffered = BytesIO()
+        image.save(buffered, format="JPEG")
+        img_str = base64.b64encode(buffered.getvalue()).decode()
+        image_url = f"data:image/jpeg;base64,{img_str}"
+    elif image_url:
+        # 使用提供的图片URL
+        pass
 
     # 构建消息列表
     messages = [
         {"role": "user", "content": [
             {"type": "text", "text": text},
-            {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{img_str}"}}
+            {"type": "image_url", "image_url": {"url": image_url}}
         ]}
     ]
 
