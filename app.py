@@ -5,7 +5,7 @@ import base64
 from io import BytesIO
 from PIL import Image
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='/static')
 
 # 配置OpenAI客户端
 client = OpenAI(
