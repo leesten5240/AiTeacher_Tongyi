@@ -10,13 +10,43 @@
 		<form id="chat-form" enctype="multipart/form-data">
 			<label for="text-input">Text:</label><br>
 			<input type="text" id="text-input" name="text"><br>
-			<label for="image-input">Upload Image:</label><br>
+			<label for="image-input">Image:</label><br>
 			<input type="file" id="image-input" name="image" accept="image/*"><br>
-			<label for="image-url">Image URL:</label><br>
-			<input type="text" id="image-url" name="image-url"><br>
 			<button type="submit">Send</button>
 		</form>
 		<div id="response"></div>
-		<script src="./js/index.js"></script>
+
+		<script>
+			document.getElementById('chat-form').addEventListener('submit', function(event) {
+				event.preventDefault();
+				const text = document.getElementById('text-input').value;
+				const fileInput = document.getElementById('image-input');
+				const file = fileInput.files[0];
+
+				const formData = new FormData();
+				formData.append('text', text);
+				formData.append('image', file);
+
+				fetch('/process', {
+						method: 'POST',
+						headers: {
+							// 不需要设置Content-Type，因为FormData会自动设置
+						},
+						body: formData
+					})
+					.then(response => response.json())
+					.then(data => {
+						if (data.response) {
+							document.getElementById('response').innerText = data.response;
+						} else {
+							document.getElementById('response').innerText = 'Error: ' + data.error;
+						}
+					})
+					.catch(error => {
+						console.error('Error:', error);
+						document.getElementById('response').innerText = 'Error: ' + error;
+					});
+			});
+		</script>
 	</body>
 </html>
