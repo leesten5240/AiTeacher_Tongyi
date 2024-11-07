@@ -33,9 +33,6 @@
 					formData.append('image', file);
 				} else if (imageUrl) {
 					formData.append('image_url', imageUrl);
-				} else {
-					alert('Please provide either an image file or an image URL.');
-					return;
 				}
 
 				fetch('/process', {

@@ -23,8 +23,15 @@ def process():
     image_file = request.files.get('image')
     image_url = request.form.get('image_url')
 
-    if not (image_file or image_url):
-        return jsonify({"error": "No image file or URL provided"}), 400
+    if not text:
+        return jsonify({"error": "No text provided"}), 400
+
+    #构建消息列表
+    messages = [
+        {"role": "user", "content": [
+            {"type": "text", "text": text}
+        ]}
+    ]
 
     if image_file:
         # 处理本地上传的图片
@@ -34,17 +41,11 @@ def process():
         image.save(buffered, format="JPEG")
         img_str = base64.b64encode(buffered.getvalue()).decode()
         image_url = f"data:image/jpeg;base64,{img_str}"
+        messages[0]['content'].append({"type":"image_url","image_url":{"url":image_url}})
     elif image_url:
         # 使用提供的图片URL
-        pass
+        messages[0]['content'].append({"type": "image_url", "image_url": {"url": image_url}})
 
-    # 构建消息列表
-    messages = [
-        {"role": "user", "content": [
-            {"type": "text", "text": text},
-            {"type": "image_url", "image_url": {"url": image_url}}
-        ]}
-    ]
 
     # 调用大模型API
     try:
