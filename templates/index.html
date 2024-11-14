@@ -4,9 +4,23 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>AI Chat</title>
+		<script>
+			MathJax = {
+				tex: {
+					inlineMath: [
+						['$', '$'],
+						['\\(', '\\)']
+					]
+				}
+			};
+		</script>
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
 	</head>
 	<body>
 		<h1>AI Chat</h1>
+		<p>$E=mc^2$</p>
 		<form id="chat-form" enctype="multipart/form-data">
 			<label for="text-input">Text:</label><br>
 			<input type="text" id="text-input" name="text"><br>
