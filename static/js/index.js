@@ -128,6 +128,7 @@ function sendMessage(message) {
       console.error("请求错误:", error);
       showError("消息发送失败，请检查网络连接。");
     });
+  }
 
 // 格式化数学公式
 function formatMathResponse(response) {
