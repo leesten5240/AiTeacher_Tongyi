@@ -3,14 +3,25 @@ let isFirstMessage = true;
 
 // 初始化提示
 const initialPrompt = {
-  role: "system",
-  content: [
-    {
-      type: "text",
-      text: "你是一个数学算数器，对用户发送的数学题只用回答1与0，正确就回答1，错误就回答0。"
-    }
-  ]
+	role: "system",
+	content: "你是一位专注于学习辅助的学习助手，专门回答与学习相关的问题。如果用户提出的问题不属于学习范畴，请礼貌地拒绝回答，并提醒用户只提问与学习相关的内容。 任务要求： - 在回答问题时，请按照步骤进行解答，保持语言简洁明了。 - 对于数学、物理等理科问题，尽量减少文字描述，更多地使用定理、公式来解答。 - 使用LaTeX语法展示所有公式和定理，并确保它们被$符号包裹起来以正确显示。 现在，请准备好根据上述指导原则来帮助用户解决他们的学习难题。"
 };
+
+document.addEventListener('DOMContentLoaded',checkLoginStatus)
+
+document.getElementById('logout').addEventListener('click', function () {
+  fetch('/logout', { method: 'POST' })
+    .then(response => {
+      if (response.ok) {
+        // 登出成功，跳转到登录页面
+        window.location.href = '/auth';
+      } else {
+        alert('Logout failed.');
+      }
+    })
+    .catch(error => {
+})
+})
 
 // 表单提交事件
 document.getElementById("chat-form").addEventListener("submit", handleSubmit);
@@ -28,14 +39,16 @@ function handleSubmit(event) {
     return;
   }
 
-  const userMessage = {
-    role: "user",
-    content: []
-  };
+  let userMessage={};
+  
+    userMessage = {
+      role: "user",
+      content: [{ type: "text", text }]
+    };
 
-  if (text) {
-    userMessage.content.push({ type: "text", text });
-  }
+
+
+
 
   if (file) {
     const reader = new FileReader();
@@ -115,7 +128,6 @@ function sendMessage(message) {
       console.error("请求错误:", error);
       showError("消息发送失败，请检查网络连接。");
     });
-}
 
 // 格式化数学公式
 function formatMathResponse(response) {
@@ -137,4 +149,30 @@ function escapeHTML(text) {
   const div = document.createElement("div");
   div.textContent = text;
   return div.innerHTML;
+}
+
+// 检查用户登录状态
+async function checkLoginStatus() {
+  const response = await fetch('/check_session', { method: 'GET' });
+  
+  if (response.status === 401) {
+    // 未登录，跳转到登录页面
+    window.location.href = '/auth';
+  } else {
+    const data = await response.json();
+    console.log(`Welcome, ${data.user}!`);
+  }
+}
+
+// 检查用户登录状态
+async function checkLoginStatus() {
+  const response = await fetch('/check_session', { method: 'GET' });
+  
+  if (response.status === 401) {
+    // 未登录，跳转到登录页面
+    window.location.href = '/auth';
+  } else {
+    const data = await response.json();
+    console.log(`Welcome, ${data.user}!`);
+  }
 }

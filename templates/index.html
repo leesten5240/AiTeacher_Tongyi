@@ -16,125 +16,14 @@
       }
     };
   </script>
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <!-- <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script> -->
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-  <style>
-    /* 页面基础样式 */
-    html, body {
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(135deg, #f4f7fa, #e1ecf5);
-      color: #333;
-      margin: 0;
-      height: 100%;
-      overflow: hidden;
-    }
+<link rel="stylesheet" href="/static/css/index.css">
 
-    /* 整体容器 */
-    #chat-container {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      height: 100%;
-      width: 90%;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 10px;
-      box-sizing: border-box;
-    }
-
-    /* 聊天记录区域 */
-    #chat-history {
-      flex-grow: 1;
-      width: 100%;
-      overflow-y: auto;
-      margin-bottom: 10px;
-      padding: 10px;
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px; /* 消息间距 */
-    }
-
-    /* 消息样式 */
-    .message {
-      padding: 10px 15px;
-      border-radius: 10px;
-      max-width: 75%;
-      word-wrap: break-word;
-      line-height: 1.5;
-      text-align: left;
-    }
-
-    .user-message {
-      background-color: #d1f7d1;
-      align-self: center;
-    }
-
-    .assistant-message {
-      background-color: #f0f0f0;
-      align-self: center;
-    }
-
-    .message img {
-      max-width: 100%;
-      border-radius: 8px;
-      margin-top: 10px;
-    }
-
-    /* 输入表单样式 */
-    form {
-      width: 100%;
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
-    input[type="text"], input[type="file"], button {
-      padding: 10px;
-      border-radius: 5px;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-    }
-
-    input[type="text"], input[type="file"] {
-      flex: 2;
-    }
-
-    button {
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      cursor: pointer;
-      flex-shrink: 0;
-      padding: 10px 20px;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    /* 滚动条样式优化 */
-    #chat-history::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    #chat-history::-webkit-scrollbar-thumb {
-      background-color: #ccc;
-      border-radius: 4px;
-    }
-
-    #chat-history::-webkit-scrollbar-thumb:hover {
-      background-color: #aaa;
-    }
-  </style>
 </head>
 <body>
+  <div id="logout">登出</div>
   <div id="chat-container">
     <!-- 消息历史 -->
     <div id="chat-history" aria-label="Chat History" role="log"></div>
