@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>AI Chat</title>
-		<script>
-			MathJax = {
-				tex: {
-					inlineMath: [
-						['$', '$'],
-						['\\(', '\\)']
-					]
-				}
-			};
-		</script>
-		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-		<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Chat Assistant</title>
+
+  <!-- MathJax 配置 -->
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ['$', '$'],
+          ['\\(', '\\)']
+        ]
+      }
+    };
+  </script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
   <style>
     /* 页面基础样式 */
     html, body {
@@ -26,8 +26,8 @@
       background: linear-gradient(135deg, #f4f7fa, #e1ecf5);
       color: #333;
       margin: 0;
-      height: 100%; /* 确保占满屏幕高度 */
-      overflow: hidden; /* 禁止页面滚动 */
+      height: 100%;
+      overflow: hidden;
     }
 
     /* 整体容器 */
@@ -36,43 +36,48 @@
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
-      height: 100%; /* 固定页面高度 */
+      height: 100%;
+      width: 90%;
+      max-width: 800px;
+      margin: 0 auto;
       padding: 10px;
       box-sizing: border-box;
     }
 
     /* 聊天记录区域 */
     #chat-history {
-      flex-grow: 1; /* 占用剩余空间 */
+      flex-grow: 1;
       width: 100%;
-      max-width: 500px;
-      overflow-y: auto; /* 内部滚动条 */
+      overflow-y: auto;
       margin-bottom: 10px;
       padding: 10px;
       background-color: #fff;
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px; /* 消息间距 */
     }
 
     /* 消息样式 */
     .message {
-      margin-bottom: 15px;
-      padding: 10px;
+      padding: 10px 15px;
       border-radius: 10px;
       max-width: 75%;
       word-wrap: break-word;
       line-height: 1.5;
+      text-align: left;
     }
 
     .user-message {
       background-color: #d1f7d1;
-      align-self: flex-end;
-      text-align: right;
+      align-self: center;
     }
 
     .assistant-message {
       background-color: #f0f0f0;
-      align-self: flex-start;
+      align-self: center;
     }
 
     .message img {
@@ -84,7 +89,6 @@
     /* 输入表单样式 */
     form {
       width: 100%;
-      max-width: 500px;
       display: flex;
       gap: 10px;
       align-items: center;
@@ -95,12 +99,10 @@
       border-radius: 5px;
       font-size: 1rem;
       border: 1px solid #ccc;
-      flex: 1;
     }
 
-    input[type="text"]:focus {
-      border-color: #007BFF;
-      outline: none;
+    input[type="text"], input[type="file"] {
+      flex: 2;
     }
 
     button {
@@ -110,23 +112,47 @@
       cursor: pointer;
       flex-shrink: 0;
       padding: 10px 20px;
+      transition: background-color 0.3s ease;
     }
 
     button:hover {
       background-color: #0056b3;
+    }
+
+    /* 滚动条样式优化 */
+    #chat-history::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    #chat-history::-webkit-scrollbar-thumb {
+      background-color: #ccc;
+      border-radius: 4px;
+    }
+
+    #chat-history::-webkit-scrollbar-thumb:hover {
+      background-color: #aaa;
     }
   </style>
 </head>
 <body>
   <div id="chat-container">
     <!-- 消息历史 -->
-    <div id="chat-history"></div>
+    <div id="chat-history" aria-label="Chat History" role="log"></div>
 
     <!-- 输入表单 -->
     <form id="chat-form" enctype="multipart/form-data">
-      <input type="text" id="text-input" placeholder="Type your message here..." required>
-      <input type="file" id="image-input" accept="image/*">
-      <button type="submit">Send</button>
+      <input
+        type="text"
+        id="text-input"
+        placeholder="Type your message here..."
+        aria-label="Message Input"
+        required>
+      <input
+        type="file"
+        id="image-input"
+        accept="image/*"
+        aria-label="Image Upload">
+      <button type="submit" aria-label="Send Message">Send</button>
     </form>
   </div>
 
