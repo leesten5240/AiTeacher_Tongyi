@@ -12,16 +12,19 @@ DB_PASSWORD = 'ymn20035240'  # 数据库密码
 DB_NAME = 'aiteacher'  # 数据库名称
 
 def get_db_connection():
-    connection = pymysql.connect(
-        host=DB_HOST,
-        user=DB_USER,
-        password=DB_PASSWORD,
-        database=DB_NAME,
-        cursorclass=pymysql.cursors.DictCursor
-    )
-    return connection
+    try:
+        connection = pymysql.connect(
+            host=DB_HOST,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            database=DB_NAME,
+            cursorclass=pymysql.cursors.DictCursor
+        )
+        return connection
+    except Exception as e:
+        print(f"Error connecting to the database: {e}")
+        raise
 
-users_db = {}
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
@@ -60,6 +63,7 @@ def login():
     if not username or not password:
         return jsonify({'error': 'Username and password are required'}), 400
     
+    conn=None #初始化连接
     try:
         conn=get_db_connection()
         with conn.cursor() as cursor:
@@ -71,10 +75,23 @@ def login():
             #设置会话
             session['user'] = username
             return jsonify({'message': 'Login successful'}), 200
+    except Exception as e:
+        print(f'Error during login: {e}')
+        return jsonify({'error': 'Internal server error'}), 500
     finally:
-        conn.close()
+        if conn:
+            conn.close()
 
 @auth_bp.route('/logout', methods=['POST'])
 def logout():
     session.pop('user', None)
     return jsonify({'message': 'Logged out successfully'}), 200
+
+@auth_bp.route('/check_session',methods=['GET'])
+def check_session():
+    if 'user' in session:
+        return jsonify({'logged_in':True,'user':session['user']})
+    return jsonify({'logged_in':False}),401
+
+    
+    

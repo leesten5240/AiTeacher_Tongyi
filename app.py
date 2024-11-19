@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template,session,redirect,url_for
 from openai import OpenAI
 import os
 import base64
@@ -27,6 +27,17 @@ def get_db_connection():
     )
     return connection
 
+# 装饰器检查是否登录
+def login_required(func):
+    def wrapper(*args, **kwargs):
+        if 'user' not in session:
+            if request.is_json:#如果是AJAX请求
+                return jsonify({'error': '未登录'}), 401
+            return redirect(url_for('auth'))  # 跳转到登录页面
+        return func(*args, **kwargs)
+    wrapper.__name__ = func.__name__
+    return wrapper
+
 app.register_blueprint(auth_bp)
 
 
@@ -38,6 +49,7 @@ client = OpenAI(
 )
 
 @app.route('/')
+@login_required
 def index():
     return render_template('index.html')
 

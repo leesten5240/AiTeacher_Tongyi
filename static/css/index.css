@@ -1,0 +1,111 @@
+/* 页面基础样式 */
+html, body {
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, #f4f7fa, #e1ecf5);
+  color: #333;
+  margin: 0;
+  height: 100%; /* 确保占满屏幕高度 */
+  overflow: hidden; /* 禁止页面滚动 */
+}
+
+/* 整体容器 */
+#chat-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%; /* 固定页面高度 */
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+#logout{
+    float:right;
+    width:60px;
+    height: 40px;
+    margin: 10px;
+    background-color: #007BFF;
+    text-align: center;
+    line-height: 40px;
+    border-radius: 5px;
+}
+
+#logout:hover{
+    background-color: #0056b3;
+}
+
+/* 聊天记录区域 */
+#chat-history {
+  flex-grow: 1; /* 占用剩余空间 */
+  width: 100%;
+  max-width: 900px;
+  overflow-y: auto; /* 内部滚动条 */
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 消息样式 */
+.message {
+  margin-bottom: 15px;
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 75%;
+  word-wrap: break-word;
+  line-height: 1.5;
+}
+
+.user-message {
+  background-color: #d1f7d1;
+  align-self: flex-end;
+  text-align: right;
+}
+
+.assistant-message {
+  background-color: #f0f0f0;
+  align-self: flex-start;
+}
+
+.message img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+/* 输入表单样式 */
+form {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+input[type="text"], input[type="file"], button {
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  flex: 1;
+}
+
+input[type="text"]:focus {
+  border-color: #007BFF;
+  outline: none;
+}
+
+button {
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 10px 20px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
