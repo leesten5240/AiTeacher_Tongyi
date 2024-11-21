@@ -11,21 +11,6 @@ import pymysql
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.secret_key="4c06b6ce11fe3eeba1fd8544537e82a463742dc40dd5759a6f249da6962a6055"#os.environ.get('secret_key')  # 用于加密 session 数据
 print(os.environ.get('secret_key'))
-#数据库信息
-DB_HOST = 'localhost'  # MySQL 主机地址
-DB_USER = 'root'       # 数据库用户名
-DB_PASSWORD = 'ASL12345h'  # 数据库密码
-DB_NAME = 'aiteacher'  # 数据库名称
-
-def get_db_connection():
-    connection = pymysql.connect(
-        host=DB_HOST,
-        user=DB_USER,
-        password=DB_PASSWORD,
-        database=DB_NAME,
-        cursorclass=pymysql.cursors.DictCursor
-    )
-    return connection
 
 # 装饰器检查是否登录
 def login_required(func):
