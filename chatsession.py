@@ -29,6 +29,7 @@ def new_session():
 @chatsession_bp.route('/sessions', methods=['GET'])
 def get_sessions():
     user_id = session.get('user_id')
+
     if not user_id:
         return jsonify({"error": "用户未登录"}), 401
 
