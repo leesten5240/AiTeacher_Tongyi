@@ -7,30 +7,17 @@ from PIL import Image
 from werkzeug.security import generate_password_hash, check_password_hash
 from auth import auth_bp
 import pymysql
+import uuid  # 用于生成唯一的会话 ID
+from database import *
+from chatsession import chatsession_bp
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
-app.secret_key="4c06b6ce11fe3eeba1fd8544537e82a463742dc40dd5759a6f249da6962a6055"#os.environ.get('secret_key')  # 用于加密 session 数据
-print(os.environ.get('secret_key'))
-#数据库信息
-DB_HOST = 'localhost'  # MySQL 主机地址
-DB_USER = 'root'       # 数据库用户名
-DB_PASSWORD = 'ASL12345h'  # 数据库密码
-DB_NAME = 'aiteacher'  # 数据库名称
-
-def get_db_connection():
-    connection = pymysql.connect(
-        host=DB_HOST,
-        user=DB_USER,
-        password=DB_PASSWORD,
-        database=DB_NAME,
-        cursorclass=pymysql.cursors.DictCursor
-    )
-    return connection
+app.secret_key=os.environ.get('secret_key')  # 用于加密 session 数据
 
 # 装饰器检查是否登录
 def login_required(func):
     def wrapper(*args, **kwargs):
-        if 'user' not in session:
+        if 'username' not in session:
             if request.is_json:#如果是AJAX请求
                 return jsonify({'error': '未登录'}), 401
             return redirect(url_for('auth'))  # 跳转到登录页面
@@ -39,7 +26,7 @@ def login_required(func):
     return wrapper
 
 app.register_blueprint(auth_bp)
-
+app.register_blueprint(chatsession_bp)
 
 
 # 配置OpenAI客户端
@@ -59,22 +46,39 @@ def auth():
 
 @app.route('/process', methods=['POST'])
 def process():
-    data = request.json
-    chat_history = data.get('chat_history', [])
+    user_id = session.get('user_id')  # 获取用户 ID
+    session_id = request.headers.get("Session-ID") or request.json.get("session_id") or request.args.get("session_id")  # 当前会话 ID
+    chat_history = request.json.get('chat_history', [])
 
-    if not chat_history:
-        return jsonify({"error": "No chat history provided"}), 400
+    if not user_id or not session_id:
+        return jsonify({"error": "无效的会话或用户未登录"}), 401
 
-    # 构建消息列表
-    messages = chat_history
-
-    # 调用大模型API
     try:
+        # 保存每条消息到数据库
+        connection = get_db_connection()
+        with connection.cursor() as cursor:
+            for message in chat_history:
+                if message['role']=='system':
+                    continue
+                role = message['role']
+                content = message['content'][0]['text']
+                sql = "INSERT INTO chat_messages (session_id, role, content) VALUES (%s, %s, %s)"
+                cursor.execute(sql, (session_id, role, content))
+            connection.commit()
+        
+        # 调用大模型 API 获取助手回复
         completion = client.chat.completions.create(
             model="qwen-vl-plus",
-            messages=messages
+            messages=chat_history
         )
         response_content = completion.choices[0].message.content
+        
+        # 将助手回复也存入数据库
+        with connection.cursor() as cursor:
+            sql = "INSERT INTO chat_messages (session_id, role, content) VALUES (%s, 'assistant', %s)"
+            cursor.execute(sql, (session_id, response_content))
+            connection.commit()
+
         return jsonify({"response": response_content})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
