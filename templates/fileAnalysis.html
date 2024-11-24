@@ -1,36 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
-		<meta charset="utf-8">
-		<title>文件分析</title>
-		<style>
-			#container {
-				display: flex;
-				width: 100%;
-				height: 100%;
-				border: 1px solid blue;
-			}
-
-			#slider {
-				display: flex;
-				flex-direction: column;
-				justify-content: space-around;
-				align-items: center;
-				width: 10%;
-				height: 200px;
-				border: 1px solid red;
-			}
-		</style>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>成绩分析</title>
+		<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+		<link rel="stylesheet" href="/static/css/fileAnalysis.css" />
 	</head>
 	<body>
-		<div id="container">
-			<div id="slider">
-				<div id="AnswerQestion">Ai解题</div>
-				<div id="StudentAnalysis">学生分析</div>
-			</div>
-			<div id="content">
-
+		<div class="sidebar">
+			<button onclick="navigateTo('home')">解题</button>
+			<button onclick="navigateTo('scoreAnalysis')">分析</button>
+			<div>
+				<button>新建分析</button>
+				<div>
+					<button>会话1</button>
+					<button>会话2</button>
+					<!-- 其他会话按钮 -->
+				</div>
 			</div>
 		</div>
+		<div class="content">
+			<div class="actions">
+				<input type="file" id="fileInput" />
+				<label for="analysisType">分析内容：</label>
+				<select id="analysisType">
+					<option value="class">班级成绩分析</option>
+					<option value="student">学生成绩分析</option>
+				</select>
+				<button id="analyzeButton" onclick="startAnalysis()">开始分析</button>
+			</div>
+			<div class="chart-container">
+				<div id="chart"></div>
+				<div class="analysis-result" id="analysisResult">请点击开始分析</div>
+			</div>
+		</div>
+		<script src="/static/js/fileAnalysis.js"></script>
 	</body>
 </html>
