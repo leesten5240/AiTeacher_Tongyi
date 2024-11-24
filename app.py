@@ -57,13 +57,11 @@ def process():
         # 保存每条消息到数据库
         connection = get_db_connection()
         with connection.cursor() as cursor:
-            for message in chat_history:
-                if message['role']=='system':
-                    continue
-                role = message['role']
-                content = message['content'][0]['text']
-                sql = "INSERT INTO chat_messages (session_id, role, content) VALUES (%s, %s, %s)"
-                cursor.execute(sql, (session_id, role, content))
+            message=chat_history[len(chat_history)-1]
+            role = message['role']
+            content = message['content'][0]['text']
+            sql = "INSERT INTO chat_messages (session_id, role, content) VALUES (%s, %s, %s)"
+            cursor.execute(sql, (session_id, role, content))
             connection.commit()
         
         # 调用大模型 API 获取助手回复

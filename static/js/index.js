@@ -211,7 +211,7 @@ document.getElementById('new-chat').addEventListener('click', function() {
 		.then((data) => {
 			console.log(`新对话已开始，Chat ID: ${data.session_id}`);
 			const messageDiv = document.createElement('div');
-			messageDiv.className = "system-message";
+			messageDiv.className = "assistant-message";
 			messageDiv.textContent = "新对话已开始！";
 			chatHistoryDiv.appendChild(messageDiv);
 			chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight;
