@@ -10,6 +10,7 @@ import pymysql
 import uuid  # 用于生成唯一的会话 ID
 from database import *
 from chatsession import chatsession_bp
+from scoreAnalysis import scoreAnalysis_bp
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 app.secret_key=os.environ.get('secret_key')  # 用于加密 session 数据
@@ -27,7 +28,7 @@ def login_required(func):
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(chatsession_bp)
-
+app.register_blueprint(scoreAnalysis_bp)
 
 # 配置OpenAI客户端
 client = OpenAI(
