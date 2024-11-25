@@ -55,14 +55,14 @@ async function startAnalysis() {
 		const analysisData = await analysisResponse.json();
 
 		if (analysisResponse.ok) {
-			// const markdownContent = analysisData.analysis;
-			// const htmlContent = marked(markdownContent);
-			// analysisResultElement.innerText = htmlContent;
-			analysisResultElement.innerText = analysisData.analysis;
+			const markdownContent = analysisData.analysis;
+			const htmlContent = marked.parse(markdownContent);
+			analysisResultElement.innerHTML = htmlContent;
 		} else {
 			alert('AI 分析请求失败');
 			console.error(analysisData.error);
 		}
+
 	} catch (error) {
 		console.error('请求失败:', error);
 		alert('请求失败，请检查网络或联系管理员');

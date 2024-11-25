@@ -5,6 +5,9 @@ import pandas as pd
 from openai import OpenAI
 from flask import Blueprint, request, jsonify, session
 from pathlib import Path
+from database import get_db_connection
+import json
+from datetime import datetime
 
 scoreAnalysis_bp = Blueprint('scoreAnalysis', __name__)
 
@@ -71,6 +74,30 @@ def analyze():
         if os.path.exists(temp_file_path):
             os.remove(temp_file_path)
 
+#查询用户所有的分析记录
+@scoreAnalysis_bp.route('/analysis_records', methods=['GET'])
+def get_records():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'error': '未登录用户'}), 401
+    try:
+        rows=fetch_analysis_records(user_id)
+        records = [
+            {
+                'id': row['id'],
+                'filename': row['filename'],
+                'analysis_type': row['analysis_type'],
+                'chart_option': row['chart_option'],
+                'ai_analysis': row['ai_analysis'],
+                'created_at': row['created_at']
+            }
+            for row in rows
+        ]
+        return jsonify({'records': records}), 200
+    except Exception as e:
+        print(f"Error loading user records: {e}")
+        return jsonify({'error': 'Failed to fetch records'}), 500
+
 #echart对象生成
 def process_class_echarts_data(file):
     # 检查文件类型
@@ -114,13 +141,8 @@ def process_class_echarts_data(file):
         print(f"Error processing file: {e}")
         return jsonify({'error': 'Failed to process file'}), 500
 
+#自动检测实际表头行
 def detect_header_row(file_path, key_columns):
-    """
-    自动检测实际表头行。
-    :param file_path: 文件路径
-    :param key_columns: 关键字段列表（例如 ["姓名", "语文", "数学"]）
-    :return: DataFrame（解析后的数据）
-    """
     df = pd.read_excel(file_path, header=None)  # 不指定表头，全部读取
     for i, row in df.iterrows():
         if all(col in row.values for col in key_columns):
@@ -180,3 +202,54 @@ def process_student_echarts_data(file):
     except Exception as e:
         print(f"Error processing file: {e}")
         return jsonify({'error': 'Failed to process file'}), 500
+
+
+def save_analysis_record(user_id, file_name, analysis_type, analysis_text, chart_option):
+
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            # 插入分析记录
+            insert_query = """
+                INSERT INTO analysis_records (user_id, file_name, analysis_type, analysis_text, chart_option, created_at)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """
+            cursor.execute(insert_query, (
+                user_id,
+                file_name,
+                analysis_type,
+                analysis_text,
+                json.dumps(chart_option),  # 将字典转换为 JSON 字符串存储
+                datetime.now()
+            ))
+            conn.commit()
+            print("Analysis record saved successfully!")
+    except Exception as e:
+        print(f"Error saving analysis record: {e}")
+        raise
+    finally:
+        conn.close()
+
+def fetch_analysis_records(user_id):
+    """
+    获取用户的所有分析记录。
+
+    :param user_id: 用户 ID
+    :return: 用户的分析记录列表
+    """
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            # 查询分析记录
+            select_query = "SELECT * FROM analysis_records WHERE user_id = %s ORDER BY created_at DESC"
+            cursor.execute(select_query, (user_id,))
+            records = cursor.fetchall()  # 获取所有记录
+            return records
+    except Exception as e:
+        print(f"Error fetching analysis records: {e}")
+        raise
+    finally:
+        conn.close()
+
+
+
