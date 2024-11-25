@@ -3,7 +3,7 @@ import tempfile
 
 import pandas as pd
 from openai import OpenAI
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify, session, make_response
 from pathlib import Path
 from database import get_db_connection
 import json
@@ -18,7 +18,24 @@ def upload_class():
         return jsonify({'error': 'No file uploaded'}), 400
 
     file = request.files['file']
-    return process_class_echarts_data(file)
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'error': '未登录用户'}), 401
+
+    response = process_class_echarts_data(file)
+
+    if response.status_code == 200:
+        chart_option = response.get_json().get('option')
+        record_id=save_analysis_record(
+            user_id=user_id,
+            file_name=file.filename,
+            analysis_type='class',
+            analysis_text='',  # AI 分析结果由 `/analyze` 接口处理
+            chart_option=chart_option
+        )
+        return jsonify({'record_id': record_id, 'chart_option': response.get_json()}), 200
+    else:
+        return response
 
 client = OpenAI(
     api_key="sk-a4156f5fe5db4412a9020740eedf888b",  # 替换为你的API密钥
@@ -32,7 +49,23 @@ def upload_student():
         return jsonify({'error': 'No file uploaded'}), 400
 
     file = request.files['file']
-    return process_student_echarts_data(file)
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'error': '未登录用户'}), 401
+
+    response = process_student_echarts_data(file)
+    if response.status_code == 200:
+        chart_option = response.get_json().get('option')
+        record_id=save_analysis_record(
+            user_id=user_id,
+            file_name=file.filename,
+            analysis_type='student',
+            analysis_text='',  # AI 分析结果由 `/analyze` 接口处理
+            chart_option=chart_option
+        )
+        return jsonify({'record_id': record_id, 'chart_option': response.get_json()}), 200
+    else:
+        return response
 
 @scoreAnalysis_bp.route('/analyze', methods=['POST'])
 def analyze():
@@ -40,6 +73,11 @@ def analyze():
     if 'file' not in request.files:
         return jsonify({'error': 'No file uploaded'}), 400
     file = request.files['file']
+    record_id=request.form.get('record_id')
+    print(f"record_id:{record_id}")
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'error': '未登录用户'}), 401
 
     # 创建安全的临时文件路径
     with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(file.filename)[1]) as temp_file:
@@ -63,9 +101,16 @@ def analyze():
         )
 
         # Step 3: 提取返回结果
-        result = completion.choices[0].message.content #completion['choices'][0]['message']['content']
+        analysis_text = completion.choices[0].message.content #completion['choices'][0]['message']['content']
 
-        return jsonify({'analysis': result}), 200
+        # 更新记录
+        update_query = "UPDATE analysis_records SET ai_analysis = %s WHERE id = %s AND user_id = %s"
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute(update_query, (analysis_text, record_id, user_id))
+            conn.commit()
+
+        return jsonify({'analysis': analysis_text}), 200
     except Exception as e:
         print(f"Error during analysis: {e}")
         return jsonify({'error': 'Failed to analyze file'}), 500
@@ -135,8 +180,8 @@ def process_class_echarts_data(file):
                 {"name": "最低分", "type": "bar", "data": min_scores},
             ],
         }
-
-        return jsonify({'option': option}), 200
+        response = make_response(jsonify({'option': option}), 200)
+        return response
     except Exception as e:
         print(f"Error processing file: {e}")
         return jsonify({'error': 'Failed to process file'}), 500
@@ -198,7 +243,8 @@ def process_student_echarts_data(file):
             "series": series,
         }
 
-        return jsonify({'option': option}), 200
+        response = make_response(jsonify({'option': option}), 200)
+        return response
     except Exception as e:
         print(f"Error processing file: {e}")
         return jsonify({'error': 'Failed to process file'}), 500
@@ -211,7 +257,7 @@ def save_analysis_record(user_id, file_name, analysis_type, analysis_text, chart
         with conn.cursor() as cursor:
             # 插入分析记录
             insert_query = """
-                INSERT INTO analysis_records (user_id, file_name, analysis_type, analysis_text, chart_option, created_at)
+                INSERT INTO analysis_records (user_id, filename, analysis_type, ai_analysis, chart_option, created_at)
                 VALUES (%s, %s, %s, %s, %s, %s)
             """
             cursor.execute(insert_query, (
@@ -224,6 +270,7 @@ def save_analysis_record(user_id, file_name, analysis_type, analysis_text, chart
             ))
             conn.commit()
             print("Analysis record saved successfully!")
+            return cursor.lastrowid #返回生成的ID
     except Exception as e:
         print(f"Error saving analysis record: {e}")
         raise
@@ -250,6 +297,29 @@ def fetch_analysis_records(user_id):
         raise
     finally:
         conn.close()
+
+
+def delete_analysis_record(record_id):
+    """
+    删除指定分析记录。
+
+    :param record_id: 分析记录的 ID
+    """
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            # 删除记录
+            delete_query = "DELETE FROM analysis_records WHERE id = %s"
+            cursor.execute(delete_query, (record_id,))
+            conn.commit()
+            print(f"Analysis record with ID {record_id} deleted successfully!")
+    except Exception as e:
+        print(f"Error deleting analysis record: {e}")
+        raise
+    finally:
+        conn.close()
+
+
 
 
 

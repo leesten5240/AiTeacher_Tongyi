@@ -25,6 +25,7 @@ async function startAnalysis() {
 	const file = fileInput.files[0];
 	const formData = new FormData();
 	formData.append('file', file);
+	formData.append('analysis_type', analysisType);
 
 	try {
 		// 请求绘图数据
@@ -35,18 +36,24 @@ async function startAnalysis() {
 			body: formData,
 		});
 
-		const chartData = await chartResponse.json();
+		const responseJson = await chartResponse.json(); // 解析 JSON
+		const chartData = responseJson.chart_option; // 提取 chart_option 部分
 
 		if (chartResponse.ok) {
 			// 使用 ECharts 渲染图表
 			const chart = echarts.init(chartElement);
 			chart.setOption(chartData.option);
+			formData.append('chart_option', JSON.stringify(chartData.option));
+			currentRecordId = responseJson.record_id; // 保存 record_id
+			console.log(currentRecordId);
 		} else {
 			alert('绘图数据请求失败');
 			console.error(chartData.error);
+			return;
 		}
 
 		// 请求 AI 分析
+		formData.append('record_id', currentRecordId);
 		const analysisResponse = await fetch('/analyze', {
 			method: 'POST',
 			body: formData,
