@@ -58,29 +58,39 @@ def process():
         # 保存每条消息到数据库
         connection = get_db_connection()
         with connection.cursor() as cursor:
-            message=chat_history[len(chat_history)-1]
+
+            sql="SELECT * FROM chat_sessions WHERE id=%s"
+            cursor.execute(sql,(session_id))
+            if not cursor.fetchone():
+                return jsonify({'error': '会话ID不存在，请点击新建会话'}), 400
+
+            message = chat_history[-1]  # 取最新消息
             role = message['role']
-            content = message['content'][0]['text']
-            sql = "INSERT INTO chat_messages (session_id, role, content) VALUES (%s, %s, %s)"
-            cursor.execute(sql, (session_id, role, content))
+            content_items = message['content']
+            for item in content_items:
+                content_type = item['type']  # 消息类型
+                content = item.get('text') or item.get('image_url', {}).get('url')  # 文本或图片URL
+                sql = "INSERT INTO chat_messages (session_id, role, content, type) VALUES (%s, %s, %s, %s)"
+                cursor.execute(sql, (session_id, role, content, content_type))
             connection.commit()
-        
+
         # 调用大模型 API 获取助手回复
         completion = client.chat.completions.create(
             model="qwen-vl-plus",
             messages=chat_history
         )
         response_content = completion.choices[0].message.content
-        
+
         # 将助手回复也存入数据库
         with connection.cursor() as cursor:
-            sql = "INSERT INTO chat_messages (session_id, role, content) VALUES (%s, 'assistant', %s)"
+            sql = "INSERT INTO chat_messages (session_id, role, content, type) VALUES (%s, 'assistant', %s, 'text')"
             cursor.execute(sql, (session_id, response_content))
             connection.commit()
 
         return jsonify({"response": response_content})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True)

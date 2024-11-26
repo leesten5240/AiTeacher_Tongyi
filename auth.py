@@ -20,7 +20,7 @@ def register():
     password_hash = generate_password_hash(password)
 
     try:
-        conn=DataBase.get_db_connection()
+        conn=get_db_connection()
         with conn.cursor() as cursor:
             #检查用户名是否已存在
             cursor.execute("SELECT * FROM users WHERE username=%s", (username,))
