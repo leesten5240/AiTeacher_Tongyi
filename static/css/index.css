@@ -299,7 +299,7 @@
   margin-top: 70px; /* 确保不被顶部挡住 */
   padding: 10px;
   width: 300px;
-  height: calc(100vh - 70px); /* 自动调整高度 */
+  height: calc(100vh - 95px); /* 自动调整高度 */
   overflow-y: auto;
   background-color: #fff;
   border-right: 1px solid #ddd;
@@ -338,5 +338,12 @@
 
 #chat-header{
   display: flex;
+  justify-content:space-between;
+  align-items: center;
   
+}
+
+#history-session{
+  font-weight: bold;
+  font-size: large;
 }
