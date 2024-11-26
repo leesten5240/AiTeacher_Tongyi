@@ -45,6 +45,10 @@ def index():
 def auth():
     return render_template('auth.html')
 
+@app.route('/scoreAnalysis')
+def score_analysis():
+    return render_template('fileAnalysis.html')
+
 @app.route('/process', methods=['POST'])
 def process():
     user_id = session.get('user_id')  # 获取用户 ID
