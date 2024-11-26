@@ -146,12 +146,12 @@ def get_records():
 #echart对象生成
 def process_class_echarts_data(file):
     # 检查文件类型
-    if not file.filename.endswith(('.xlsx', '.csv')):
-        return jsonify({'error': 'Invalid file type'}), 400
+    if not file.filename.endswith(('.xlsx', '.csv', 'xls')):
+        return make_response(jsonify({'error': 'Invalid file type'}), 400)
 
     # 读取文件
     try:
-        if file.filename.endswith('.xlsx'):
+        if file.filename.endswith('.xlsx') or file.filename.endswith('.xls'):
             # 关键字段列表，根据文件的实际内容定义
             key_columns = ["姓名", "语文", "数学"]
             # 检测表头并读取数据
@@ -184,7 +184,7 @@ def process_class_echarts_data(file):
         return response
     except Exception as e:
         print(f"Error processing file: {e}")
-        return jsonify({'error': 'Failed to process file'}), 500
+        return make_response(jsonify({'error': 'Failed to process file'}), 500)
 
 #自动检测实际表头行
 def detect_header_row(file_path, key_columns):
@@ -197,7 +197,7 @@ def detect_header_row(file_path, key_columns):
 
 def filter_columns(df):
     # 自动排除固定列
-    columns_to_exclude = ['班名', '级名']
+    columns_to_exclude = ['班名', '级名', '班级']
     filtered_columns = [
         col for col in df.columns
         if col not in columns_to_exclude and df[col].dtype in ['float64', 'int64']
@@ -205,12 +205,12 @@ def filter_columns(df):
     return df[filtered_columns]
 
 def process_student_echarts_data(file):
-    if not file.filename.endswith(('.xlsx', '.csv')):
+    if not file.filename.endswith(('.xlsx', '.csv', 'xls')):
         return jsonify({'error': 'Invalid file type'}), 400
 
     try:
         # 读取文件
-        if file.filename.endswith('.xlsx'):
+        if file.filename.endswith('.xlsx') or file.filename.endswith('.xls'):
             # 关键字段列表，根据文件的实际内容定义
             key_columns = ["语文", "数学"]
             # 检测表头并读取数据
@@ -247,7 +247,7 @@ def process_student_echarts_data(file):
         return response
     except Exception as e:
         print(f"Error processing file: {e}")
-        return jsonify({'error': 'Failed to process file'}), 500
+        return make_response(jsonify({'error': 'Failed to process file'}), 500)
 
 
 def save_analysis_record(user_id, file_name, analysis_type, analysis_text, chart_option):

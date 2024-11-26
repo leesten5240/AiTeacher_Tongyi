@@ -32,6 +32,22 @@ body {
 	background-color: #357abd;
 }
 
+.record-button {
+	margin: 5px 0;
+	padding: 10px;
+	width: 100%;
+	background-color: #ffffff;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	cursor: pointer;
+	text-align: left;
+}
+
+.record-button:hover {
+	background-color: #f0f0f0;
+}
+
+
 .content {
 	flex-grow: 1;
 	padding: 20px;

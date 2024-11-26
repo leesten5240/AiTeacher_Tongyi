@@ -13,17 +13,15 @@
 			<button onclick="navigateTo('home')">解题</button>
 			<button onclick="navigateTo('scoreAnalysis')">分析</button>
 			<div>
-				<button>新建分析</button>
-				<div>
-					<button>会话1</button>
-					<button>会话2</button>
-					<!-- 其他会话按钮 -->
+				<button id="newAnalysisButton" onclick="clearAnalysis()">新建分析</button>
+				<div id="recordList">
+					<!-- 分析记录显示在这 -->
 				</div>
 			</div>
 		</div>
 		<div class="content">
 			<div class="actions">
-				<input type="file" id="fileInput" />
+				<input type="file" id="fileInput" accept=".xlsx, .csv, .xls" />
 				<label for="analysisType">分析内容：</label>
 				<select id="analysisType">
 					<option value="class">班级成绩分析</option>
