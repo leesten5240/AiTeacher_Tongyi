@@ -143,6 +143,24 @@ def get_records():
         print(f"Error loading user records: {e}")
         return jsonify({'error': 'Failed to fetch records'}), 500
 
+@scoreAnalysis_bp.route('/delete_record', methods=['POST'])
+def delete_record():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'error': '未登录用户'}), 401
+
+    record_id = request.json.get('record_id')  # 从前端请求中获取 record_id
+    if not record_id:
+        return jsonify({'error': 'record_id 参数缺失'}), 400
+
+    try:
+        delete_analysis_record(record_id)  # 调用删除方法
+        return jsonify({'message': f'Record with ID {record_id} deleted successfully!'}), 200
+    except Exception as e:
+        print(f"Error deleting record: {e}")
+        return jsonify({'error': 'Failed to delete record'}), 500
+
+
 #echart对象生成
 def process_class_echarts_data(file):
     # 检查文件类型
@@ -318,6 +336,8 @@ def delete_analysis_record(record_id):
         raise
     finally:
         conn.close()
+
+
 
 
 

@@ -32,7 +32,7 @@ app.register_blueprint(scoreAnalysis_bp)
 
 # 配置OpenAI客户端
 client = OpenAI(
-    api_key="sk-a4156f5fe5db4412a9020740eedf888b",  # 替换为你的API密钥
+    api_key=os.environ.get('TONGYI_API_KEY'),  # 替换为你的API密钥
     base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
 )
 
