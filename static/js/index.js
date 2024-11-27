@@ -9,10 +9,10 @@ const initialPrompt = {
 
 document.addEventListener('DOMContentLoaded', () => {
 	checkLoginStatus(); // 检查用户是否已登录
-	loadSessions();     // 加载历史会话列表
+	loadSessions(); // 加载历史会话列表
 	loadSessionMessages(localStorage.getItem('session_id'));
 
-  });
+});
 
 
 document.getElementById('logout').addEventListener('click', function() {
@@ -193,124 +193,124 @@ async function checkLoginStatus() {
 		const userNameElement = document.getElementById('user-name');
 		if (data.logged_in) {
 			userNameElement.textContent = data.user; // 假设后端返回的用户名是 data.user.name
-		  }
+		}
 	}
 }
 
 // 获取“新建对话”按钮
-document.getElementById('new-chat').addEventListener('click', function () {
-  // 创建弹窗
-  const modal = document.createElement('div');
-  modal.id = 'modal';
-  modal.style.position = 'fixed';
-  modal.style.top = '0';
-  modal.style.left = '0';
-  modal.style.width = '100vw';
-  modal.style.height = '100vh';
-  modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-  modal.style.display = 'flex';
-  modal.style.justifyContent = 'center';
-  modal.style.alignItems = 'center';
+document.getElementById('new-chat').addEventListener('click', function() {
+	// 创建弹窗
+	const modal = document.createElement('div');
+	modal.id = 'modal';
+	modal.style.position = 'fixed';
+	modal.style.top = '0';
+	modal.style.left = '0';
+	modal.style.width = '100vw';
+	modal.style.height = '100vh';
+	modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+	modal.style.display = 'flex';
+	modal.style.justifyContent = 'center';
+	modal.style.alignItems = 'center';
 
-  // 创建弹窗内容容器
-  const modalContent = document.createElement('div');
-  modalContent.style.backgroundColor = 'white';
-  modalContent.style.padding = '20px';
-  modalContent.style.borderRadius = '8px';
-  modalContent.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
-  modalContent.style.textAlign = 'center';
+	// 创建弹窗内容容器
+	const modalContent = document.createElement('div');
+	modalContent.style.backgroundColor = 'white';
+	modalContent.style.padding = '20px';
+	modalContent.style.borderRadius = '8px';
+	modalContent.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+	modalContent.style.textAlign = 'center';
 
-  // 创建输入框
-  const input = document.createElement('input');
-  input.type = 'text';
-  input.placeholder = '请输入会话名称';
-  input.style.width = '100%';
-  input.style.padding = '8px';
-  input.style.marginBottom = '10px';
-  input.style.fontSize = '16px';
+	// 创建输入框
+	const input = document.createElement('input');
+	input.type = 'text';
+	input.placeholder = '请输入会话名称';
+	input.style.width = '100%';
+	input.style.padding = '8px';
+	input.style.marginBottom = '10px';
+	input.style.fontSize = '16px';
 
-  // 创建确认按钮
-  const confirmButton = document.createElement('button');
-  confirmButton.textContent = '确认';
-  confirmButton.style.padding = '8px 16px';
-  confirmButton.style.marginRight = '10px';
-  confirmButton.style.backgroundColor = '#4CAF50';
-  confirmButton.style.color = 'white';
-  confirmButton.style.border = 'none';
-  confirmButton.style.borderRadius = '4px';
-  confirmButton.style.cursor = 'pointer';
+	// 创建确认按钮
+	const confirmButton = document.createElement('button');
+	confirmButton.textContent = '确认';
+	confirmButton.style.padding = '8px 16px';
+	confirmButton.style.marginRight = '10px';
+	confirmButton.style.backgroundColor = '#4CAF50';
+	confirmButton.style.color = 'white';
+	confirmButton.style.border = 'none';
+	confirmButton.style.borderRadius = '4px';
+	confirmButton.style.cursor = 'pointer';
 
-  // 创建取消按钮
-  const cancelButton = document.createElement('button');
-  cancelButton.textContent = '取消';
-  cancelButton.style.padding = '8px 16px';
-  cancelButton.style.backgroundColor = '#f44336';
-  cancelButton.style.color = 'white';
-  cancelButton.style.border = 'none';
-  cancelButton.style.borderRadius = '4px';
-  cancelButton.style.cursor = 'pointer';
+	// 创建取消按钮
+	const cancelButton = document.createElement('button');
+	cancelButton.textContent = '取消';
+	cancelButton.style.padding = '8px 16px';
+	cancelButton.style.backgroundColor = '#f44336';
+	cancelButton.style.color = 'white';
+	cancelButton.style.border = 'none';
+	cancelButton.style.borderRadius = '4px';
+	cancelButton.style.cursor = 'pointer';
 
-  // 将组件添加到弹窗内容容器
-  modalContent.appendChild(input);
-  modalContent.appendChild(confirmButton);
-  modalContent.appendChild(cancelButton);
+	// 将组件添加到弹窗内容容器
+	modalContent.appendChild(input);
+	modalContent.appendChild(confirmButton);
+	modalContent.appendChild(cancelButton);
 
-  // 将弹窗内容容器添加到弹窗
-  modal.appendChild(modalContent);
+	// 将弹窗内容容器添加到弹窗
+	modal.appendChild(modalContent);
 
-  // 将弹窗添加到页面
-  document.body.appendChild(modal);
+	// 将弹窗添加到页面
+	document.body.appendChild(modal);
 
-  // 点击确认按钮的逻辑
-  confirmButton.addEventListener('click', function () {
-    const sessionName = input.value.trim();
-    if (!sessionName) {
-      alert('会话名称不能为空！');
-      return;
-    }
+	// 点击确认按钮的逻辑
+	confirmButton.addEventListener('click', function() {
+		const sessionName = input.value.trim();
+		if (!sessionName) {
+			alert('会话名称不能为空！');
+			return;
+		}
 
-    // 清空聊天历史记录
-    chatHistory = [];
-    isFirstMessage = true; // 标记为第一次对话
+		// 清空聊天历史记录
+		chatHistory = [];
+		isFirstMessage = true; // 标记为第一次对话
 
-    // 清空聊天界面
-    const chatHistoryDiv = document.getElementById('chat-history');
-    chatHistoryDiv.innerHTML = '';
+		// 清空聊天界面
+		const chatHistoryDiv = document.getElementById('chat-history');
+		chatHistoryDiv.innerHTML = '';
 
-    // 发送 AJAX 请求通知后端
-    fetch('/new_session', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        session_name: sessionName, // 使用用户输入的会话名称
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(`新对话已开始，Chat ID: ${data.session_id}`);
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'assistant-message';
-        messageDiv.textContent = '新对话已开始！';
-        chatHistoryDiv.appendChild(messageDiv);
-        chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight;
-        localStorage.setItem('session_id', data.session_id);
-        loadSessions();
-      })
-      .catch((error) => {
-        console.error('新对话请求失败:', error);
-      });
+		// 发送 AJAX 请求通知后端
+		fetch('/new_session', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					session_name: sessionName, // 使用用户输入的会话名称
+				}),
+			})
+			.then((response) => response.json())
+			.then((data) => {
+				console.log(`新对话已开始，Chat ID: ${data.session_id}`);
+				const messageDiv = document.createElement('div');
+				messageDiv.className = 'assistant-message';
+				messageDiv.textContent = '新对话已开始！';
+				chatHistoryDiv.appendChild(messageDiv);
+				chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight;
+				localStorage.setItem('session_id', data.session_id);
+				loadSessions();
+			})
+			.catch((error) => {
+				console.error('新对话请求失败:', error);
+			});
 
-    // 移除弹窗
-    document.body.removeChild(modal);
-  });
+		// 移除弹窗
+		document.body.removeChild(modal);
+	});
 
-  // 点击取消按钮的逻辑
-  cancelButton.addEventListener('click', function () {
-    // 移除弹窗
-    document.body.removeChild(modal);
-  });
+	// 点击取消按钮的逻辑
+	cancelButton.addEventListener('click', function() {
+		// 移除弹窗
+		document.body.removeChild(modal);
+	});
 });
 
 
@@ -329,23 +329,24 @@ async function loadSessions() {
 
 			// 为每个会话项添加 class
 			li.classList.add('session-item');
-  
-            //防止删除会话记录后，无法选中最新的一条会话记录
-            if(localStorage.getItem('session_id')==null){
-				localStorage.setItem('session_id',session.id)
+
+			//防止删除会话记录后，无法选中最新的一条会话记录
+			if (localStorage.getItem('session_id') == null) {
+				localStorage.setItem('session_id', session.id)
 			}
 
 			//选中当前会话
-			if(session.id==localStorage.getItem('session_id')){
+			if (session.id == localStorage.getItem('session_id')) {
 				li.classList.add('active-session');
 			}
-				
-			
+
+
 
 			// 点击时加载对应会话消息，并设置当前会话样式
 			li.addEventListener('click', () => {
 				// 移除其他会话的选中状态
-				document.querySelectorAll('.session-item').forEach(item => item.classList.remove('active-session'));
+				document.querySelectorAll('.session-item').forEach(item => item.classList.remove(
+					'active-session'));
 
 				// 设置当前点击的会话为选中状态
 				li.classList.add('active-session');
@@ -354,7 +355,7 @@ async function loadSessions() {
 				loadSessionMessages(session.id);
 			});
 
-          // 创建操作菜单容器（三个点按钮）
+			// 创建操作菜单容器（三个点按钮）
 			const menuContainer = document.createElement('div');
 			menuContainer.classList.add('menu-container');
 
@@ -366,7 +367,7 @@ async function loadSessions() {
 			const menu = document.createElement('div');
 			menu.classList.add('menu');
 
-            // 删除按钮
+			// 删除按钮
 			const deleteOption = document.createElement('div');
 			deleteOption.textContent = '删除';
 			deleteOption.classList.add('menu-item');
@@ -382,12 +383,12 @@ async function loadSessions() {
 			renameOption.textContent = '重命名';
 			renameOption.classList.add('menu-item');
 			renameOption.addEventListener('click', (e) => {
-                e.stopPropagation(); // 阻止事件冒泡
-                const newName = prompt(`请输入新的会话名称（当前: ${session.session_name}）:`);
-                if (newName) {
-                    renameSession(session.id, newName);
-                }
-            });
+				e.stopPropagation(); // 阻止事件冒泡
+				const newName = prompt(`请输入新的会话名称（当前: ${session.session_name}）:`);
+				if (newName) {
+					renameSession(session.id, newName);
+				}
+			});
 
 			// 组装菜单项
 			menu.appendChild(deleteOption);
@@ -420,26 +421,28 @@ async function loadSessions() {
 
 // 添加 renameSession 函数
 async function renameSession(sessionId, newName) {
-    try {
-        const response = await fetch(`/session/${sessionId}/rename`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ session_name: newName }),
-        });
+	try {
+		const response = await fetch(`/session/${sessionId}/rename`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				session_name: newName
+			}),
+		});
 
-        if (response.ok) {
-            alert('会话名称已成功更新');
-            loadSessions(); // 重新加载会话列表
-        } else {
-            const data = await response.json();
-            alert(`重命名失败: ${data.error}`);
-        }
-    } catch (error) {
-        console.error("重命名会话失败:", error);
-        alert("重命名失败，请检查网络连接");
-    }
+		if (response.ok) {
+			alert('会话名称已成功更新');
+			loadSessions(); // 重新加载会话列表
+		} else {
+			const data = await response.json();
+			alert(`重命名失败: ${data.error}`);
+		}
+	} catch (error) {
+		console.error("重命名会话失败:", error);
+		alert("重命名失败，请检查网络连接");
+	}
 }
 
 // 添加删除会话的函数
@@ -452,14 +455,14 @@ async function deleteSession(sessionId) {
 			alert('会话已成功删除');
 			const currentSessionId = localStorage.getItem("session_id");
 
-            // 如果删除的是当前会话，清除localStorage并清空聊天界面
-            if (currentSessionId === sessionId) {
-                localStorage.removeItem("session_id");
-                chatHistory = [];
-                isFirstMessage = true; // 重置聊天状态
-                const chatHistoryDiv = document.getElementById("chat-history");
-                chatHistoryDiv.innerHTML = "";
-            }
+			// 如果删除的是当前会话，清除localStorage并清空聊天界面
+			if (currentSessionId === sessionId) {
+				localStorage.removeItem("session_id");
+				chatHistory = [];
+				isFirstMessage = true; // 重置聊天状态
+				const chatHistoryDiv = document.getElementById("chat-history");
+				chatHistoryDiv.innerHTML = "";
+			}
 			loadSessions(); // 重新加载会话列表
 		} else {
 			const data = await response.json();
@@ -473,7 +476,7 @@ async function deleteSession(sessionId) {
 
 //加载会话聊天记录
 async function loadSessionMessages(sessionId) {
-	localStorage.setItem('session_id',sessionId)
+	localStorage.setItem('session_id', sessionId)
 	const response = await fetch(`/session/${sessionId}`);
 	if (response.ok) {
 		const data = await response.json();

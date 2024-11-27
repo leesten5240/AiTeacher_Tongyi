@@ -34,13 +34,37 @@ async function loadAnalysisRecords() {
 			return;
 		}
 
-		// 动态生成记录按钮
+		// 动态生成记录按钮和删除按钮
 		records.forEach(record => {
-			const recordButton = document.createElement('button');
-			recordButton.textContent = record.filename; // 按钮显示文件名
+			const recordContainer = document.createElement('div');
+			recordContainer.className = 'record-item';
+			recordContainer.dataset.recordId = record.id; // 保存记录 ID
+
+			// 显示记录名称
+			const recordButton = document.createElement('div');
+			recordButton.textContent = record.filename;
+			recordButton.title = record.filename;
 			recordButton.className = 'record-button';
-			recordButton.onclick = () => loadRecord(record); // 点击加载记录
-			recordListElement.appendChild(recordButton);
+			recordContainer.onclick = (e) => loadRecord(record); // 点击加载记录
+
+			// 删除图标按钮
+			const deleteIcon = document.createElement('img');
+			deleteIcon.src = '/static/images/x.svg'; // 删除图标路径
+			deleteIcon.alt = '删除';
+			deleteIcon.className = 'delete-icon';
+			deleteIcon.onclick = async (e) => {
+				e.stopPropagation(); // 阻止冒泡到 recordButton 的点击事件
+				if (confirm(`确认删除记录"${record.filename}"吗？`)) {
+					await deleteRecord(record.id); // 调用删除接口
+					await loadAnalysisRecords(); // 重新加载记录列表
+				}
+
+			};
+
+			recordContainer.appendChild(recordButton);
+			recordContainer.appendChild(deleteIcon);
+			recordListElement.appendChild(recordContainer);
+
 		});
 	} catch (error) {
 		console.error('请求失败:', error);
@@ -71,6 +95,12 @@ function loadRecord(record) {
 	const markdownContent = record.ai_analysis || '加载中...';
 	const htmlContent = marked.parse(markdownContent);
 	analysisResultElement.innerHTML = htmlContent;
+
+	// 处理选中状态
+	const recordListElement = document.getElementById('recordList');
+	const recordItems = recordListElement.querySelectorAll('.record-item');
+	recordItems.forEach(item => item.classList.remove('active-record')); // 移除所有记录的选中样式
+	event.currentTarget.classList.add('active-record'); // 给当前选中的记录添加样式
 }
 
 // 清空分析结果以开始新分析
@@ -188,5 +218,38 @@ async function startAnalysis() {
 		// 恢复按钮状态
 		analyzeButton.disabled = false;
 		analyzeButton.innerText = '分析';
+	}
+}
+
+async function deleteRecord(recordId) {
+	try {
+		// 获取当前选中的记录 ID
+		const activeRecord = document.querySelector('.record-item.active-record');
+
+		const response = await fetch('/delete_record', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				record_id: recordId
+			}),
+		});
+
+		if (response.ok) {
+			const data = await response.json();
+			alert("删除成功！"); // 显示成功提示
+
+			// 如果删除的是当前选中的记录，清空右侧内容
+			if (activeRecord && activeRecord.dataset.recordId === String(recordId)) {
+				clearAnalysis(); // 清空图表和分析内容
+			}
+		} else {
+			const errorData = await response.json();
+			alert(`删除失败: ${errorData.error}`);
+		}
+	} catch (error) {
+		console.error('删除请求失败:', error);
+		alert('删除请求失败，请检查网络或联系管理员。');
 	}
 }

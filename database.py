@@ -4,6 +4,7 @@ import pymysql
 #数据库信息
 DB_HOST = 'localhost'  # MySQL 主机地址
 DB_USER = 'root'       # 数据库用户名
+
 DB_PASSWORD = os.environ.get('MYSQLPWD')  # 数据库密码
 DB_NAME = 'aiteacher'  # 数据库名称
 

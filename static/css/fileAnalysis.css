@@ -9,7 +9,7 @@ body {
 }
 
 .sidebar {
-	width: 200px;
+	width: 250px;
 	background-color: #f0f0f0;
 	padding: 20px;
 	display: flex;
@@ -32,7 +32,15 @@ body {
 	background-color: #357abd;
 }
 
-.record-button {
+.analysis_container {
+	width: 100%;
+}
+
+.record-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	/* 删除按钮固定在右侧 */
 	margin: 5px 0;
 	padding: 10px;
 	width: 100%;
@@ -40,11 +48,62 @@ body {
 	border: 1px solid #ccc;
 	border-radius: 5px;
 	cursor: pointer;
-	text-align: left;
+	position: relative;
+	/* 为删除图标的定位提供参考 */
+	overflow: hidden;
+	/* 防止内容溢出 */
 }
 
-.record-button:hover {
+.record-item:hover {
 	background-color: #f0f0f0;
+}
+
+.active-record {
+	background-color: #e6f7ff;
+	/* 浅蓝背景 */
+	border-color: #91d5ff;
+	/* 边框颜色 */
+	font-weight: bold;
+	/* 加粗字体 */
+	box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+	/* 添加阴影 */
+}
+
+.record-button {
+	flex-grow: 1;
+	/* 占满剩余空间 */
+	text-align: left;
+	border: none;
+	background: none;
+	outline: none;
+	cursor: pointer;
+	overflow: hidden;
+	/* 隐藏超出部分 */
+	white-space: nowrap;
+	/* 防止换行 */
+	text-overflow: ellipsis;
+	/* 超出部分显示省略号 */
+	padding-right: 20px;
+	/* 为删除图标留出空间 */
+}
+
+.delete-icon {
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+	position: absolute;
+	right: 10px;
+	/* 距离容器右侧 10px */
+	top: 50%;
+	/* 垂直居中 */
+	transform: translateY(-50%);
+	opacity: 0.6;
+	/* 初始透明度 */
+}
+
+.delete-icon:hover {
+	opacity: 1;
+	/* 悬停时增加透明度 */
 }
 
 
@@ -109,4 +168,12 @@ body {
 	100% {
 		transform: rotate(360deg);
 	}
+}
+
+/* 选中的会话项样式 */
+.active-session {
+	box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+	background-color: #e6f7ff;
+	border-color: #91d5ff;
+	font-weight: bold;
 }
