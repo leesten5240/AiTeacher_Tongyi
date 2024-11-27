@@ -7,6 +7,25 @@ from database import *
 
 auth_bp = Blueprint('auth', __name__)
 
+# 用户名和密码验证
+def validate_username(username):
+    if len(username) < 6:
+        return "用户名不能小于6位字符"
+    if len(username) > 18:
+        return "用户名不能大于18位字符"
+    if not username.isalnum() and "_" not in username:
+        return "用户名不能包含中文或特殊字符"
+    if not any(char.isalpha() for char in username):
+        return "用户名必须包含字母"
+    return None
+
+def validate_password(password):
+    if len(password) < 6 or len(password) > 16:
+        return "密码长度必须在6到16位之间"
+    if not any(char.isdigit() for char in password) or not any(char.isalpha() for char in password):
+        return "密码必须包含数字和字母"
+    return None
+
 @auth_bp.route('/register', methods=['POST'])
 def register():
     data = request.json
@@ -16,6 +35,15 @@ def register():
     if not username or not password:
         return jsonify({'error': 'Username and password are required'}), 400
     
+    username_validation_message = validate_username(username)
+    if username_validation_message:
+        return jsonify({'error': username_validation_message}), 400
+    
+    password_validation_message = validate_password(password)
+    if password_validation_message:
+        return jsonify({'error': password_validation_message}), 400
+
+
     #加密密码
     password_hash = generate_password_hash(password)
 

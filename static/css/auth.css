@@ -66,6 +66,12 @@ button:hover {
     text-decoration: underline;
 }
 
+.rule-text {
+    font-size: 12px;
+    color: #888;
+    margin-top: 5px;
+  }
+
 .error {
     color: red;
     font-size: 0.9rem;

@@ -400,6 +400,7 @@ async function loadSessions() {
 			// 点击菜单按钮显示/隐藏菜单
 			menuButton.addEventListener('click', (e) => {
 				e.stopPropagation();
+				document.querySelectorAll('.menu').forEach(m=>m.classList.remove('visible'));
 				menu.classList.toggle('visible');
 			});
 
