@@ -4,6 +4,7 @@
 // };
 document.addEventListener('DOMContentLoaded', function() {
 	loadAnalysisRecords();
+	checkLoginStatus();
 });
 
 // 加载分析记录
@@ -251,5 +252,24 @@ async function deleteRecord(recordId) {
 	} catch (error) {
 		console.error('删除请求失败:', error);
 		alert('删除请求失败，请检查网络或联系管理员。');
+	}
+}
+
+// 检查用户登录状态
+async function checkLoginStatus() {
+	const response = await fetch('/check_session', {
+		method: 'GET'
+	});
+
+	if (response.status === 401) {
+		// 未登录，跳转到登录页面
+		window.location.href = '/auth';
+	} else {
+		const data = await response.json();
+		console.log(`Welcome, ${data.user}!`);
+		const userNameElement = document.getElementById('user-name');
+		if (data.logged_in) {
+			userNameElement.textContent = data.user; // 假设后端返回的用户名是 data.user.name
+		}
 	}
 }

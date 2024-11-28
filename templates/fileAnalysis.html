@@ -9,31 +9,43 @@
 		<link rel="stylesheet" href="/static/css/fileAnalysis.css" />
 	</head>
 	<body>
-		<div class="sidebar">
-			<button onclick="navigateTo('home')">解题</button>
-			<button onclick="navigateTo('scoreAnalysis')">分析</button>
-			<div class="analysis_container">
-				<button id="newAnalysisButton" onclick="clearAnalysis()">新建分析</button>
-				<div id="recordList">
-					<!-- 分析记录显示在这 -->
+
+		<div id="header">
+			<div id="user-info">
+				<img id="user-avatar" src="/static/images/头像.png" alt="User Avatar">
+				<span id="user-name">用户名</span>
+			</div>
+			<button onclick="navigateTo('home')">Ai对话</button>
+			<div id="logout">登出</div>
+			</script>
+		</div>
+
+		<div class="bodys">
+			<div class="sidebar">
+				<div class="analysis_container">
+					<button id="newAnalysisButton" onclick="clearAnalysis()">新建分析</button>
+					<div id="recordList">
+						<!-- 分析记录显示在这 -->
+					</div>
+				</div>
+			</div>
+			<div class="content">
+				<div class="actions">
+					<input type="file" id="fileInput" accept=".xlsx, .csv, .xls" />
+					<label for="analysisType">分析内容：</label>
+					<select id="analysisType">
+						<option value="class">班级成绩分析</option>
+						<option value="student">学生成绩分析</option>
+					</select>
+					<button id="analyzeButton" onclick="startAnalysis()">开始分析</button>
+				</div>
+				<div class="chart-container">
+					<div id="chart"></div>
+					<div class="analysis-result" id="analysisResult">请点击开始分析</div>
 				</div>
 			</div>
 		</div>
-		<div class="content">
-			<div class="actions">
-				<input type="file" id="fileInput" accept=".xlsx, .csv, .xls" />
-				<label for="analysisType">分析内容：</label>
-				<select id="analysisType">
-					<option value="class">班级成绩分析</option>
-					<option value="student">学生成绩分析</option>
-				</select>
-				<button id="analyzeButton" onclick="startAnalysis()">开始分析</button>
-			</div>
-			<div class="chart-container">
-				<div id="chart"></div>
-				<div class="analysis-result" id="analysisResult">请点击开始分析</div>
-			</div>
-		</div>
+
 		<script src="/static/js/fileAnalysis.js"></script>
 	</body>
 </html>
