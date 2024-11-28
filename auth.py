@@ -84,20 +84,12 @@ def login():
             if not user or not check_password_hash(user['password_hash'], password):
                 return jsonify({'error': '用户名或密码错误！'}), 401
             
-            #设置会话
-            session_id = str(uuid.uuid4())  # 生成唯一 session_id  # 自定义生成会话 ID 的逻辑
-            session['session_id'] = session_id  # 存储到后端会话
+            # #设置会话
             session['username'] = username
             session['user_id']=user['id']
-            # 向 chat_sessions 表插入记录
-            cursor.execute(
-                "INSERT INTO chat_sessions (id, user_id) VALUES (%s, %s)",
-                (session_id, user['id'])
-            )
-            conn.commit()  # 提交更改到数据库
 
-            return jsonify({'message': '登录成功！', 'session_id': session_id}), 200
-            # return jsonify({'message': 'Login successful'}), 200
+            # return jsonify({'message': '登录成功！', 'session_id': session_id}), 200
+            return jsonify({'message': '登录成功！'}), 200
     except Exception as e:
         print(f'Error during login: {e}')
         return jsonify({'error': '服务器内部错误'}), 500
