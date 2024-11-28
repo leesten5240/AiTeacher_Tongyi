@@ -30,6 +30,10 @@ document.getElementById('logout').addEventListener('click', function() {
 		.catch(error => {})
 })
 
+document.getElementById('analyze_button').addEventListener('click', function() {
+	window.location.href = '/scoreAnalysis';
+})
+
 // 表单提交事件
 document.getElementById("chat-form").addEventListener("submit", handleSubmit);
 

@@ -101,7 +101,7 @@ def analyze():
         )
 
         # Step 3: 提取返回结果
-        analysis_text = completion.choices[0].message.content #completion['choices'][0]['message']['content']
+        analysis_text = completion.choices[0].message.content
 
         # 更新记录
         update_query = "UPDATE analysis_records SET ai_analysis = %s WHERE id = %s AND user_id = %s"
@@ -110,7 +110,7 @@ def analyze():
             cursor.execute(update_query, (analysis_text, record_id, user_id))
             conn.commit()
 
-        return jsonify({'analysis': analysis_text}), 200
+        return jsonify({'analysis': analysis_text, 'record_id': record_id}), 200
     except Exception as e:
         print(f"Error during analysis: {e}")
         return jsonify({'error': 'Failed to analyze file'}), 500
@@ -142,6 +142,25 @@ def get_records():
     except Exception as e:
         print(f"Error loading user records: {e}")
         return jsonify({'error': 'Failed to fetch records'}), 500
+
+#查询单条分析记录
+@scoreAnalysis_bp.route('/analysis_record/<record_id>', methods=['GET'])
+def get_record(record_id):
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'error': '未登录用户'}), 401
+
+    if not record_id:
+        return jsonify({'error': 'record_id 参数缺失'}), 400
+
+    try:
+        record = fetch_analysis_record(record_id)  # 调用查询方法
+        if not record:
+            return jsonify({'error': '记录不存在'}), 404
+        return jsonify(record), 200
+    except Exception as e:
+        print(f"Error loading record: {e}")
+        return jsonify({'error': 'Failed to fetch record'}), 500
 
 @scoreAnalysis_bp.route('/delete_record', methods=['POST'])
 def delete_record():
@@ -312,6 +331,24 @@ def fetch_analysis_records(user_id):
             return records
     except Exception as e:
         print(f"Error fetching analysis records: {e}")
+        raise
+    finally:
+        conn.close()
+
+def fetch_analysis_record(record_id):
+    """
+    获取指定分析记录。
+    """
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            # 查询记录
+            select_query = "SELECT * FROM analysis_records WHERE id = %s"
+            cursor.execute(select_query, (record_id,))
+            record = cursor.fetchone()
+            return record
+    except Exception as e:
+        print(f"Error selecting analysis record: {e}")
         raise
     finally:
         conn.close()
