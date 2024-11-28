@@ -6,10 +6,17 @@ const authButton = document.getElementById('auth-button');
 const messageDiv = document.getElementById('message');
 const usernameInput = document.getElementById('username');
 const passwordInput = document.getElementById('password');
+const confirmPasswordInput = document.getElementById('confirm-password');
 const usernameRule = document.getElementById('username-rule');
 const passwordRule = document.getElementById('password-rule');
+const confirmPasswordRule = document.getElementById('confirm-password-rule');
 
 let isLogin = true;
+
+// 页面加载时，初始化确认密码输入框状态
+document.addEventListener('DOMContentLoaded', () => {
+    updateConfirmPasswordVisibility(); // 初始化确认密码框的显示状态
+});
 
 toggleAuth.addEventListener('click', () => {
     isLogin = !isLogin;
@@ -19,7 +26,23 @@ toggleAuth.addEventListener('click', () => {
         ? "Don't have an account? Register here."
         : "Already have an account? Login here.";
     messageDiv.textContent = '';
+
+    updateConfirmPasswordVisibility(); // 切换模式时更新确认密码框状态
 });
+
+// 更新确认密码框的显示状态和required属性
+function updateConfirmPasswordVisibility() {
+    if (isLogin) {
+        confirmPasswordInput.style.display = 'none';  // 隐藏确认密码框
+        confirmPasswordInput.removeAttribute('required');  // 移除 required 属性
+        confirmPasswordRule.style.display='none';
+    } else {
+        confirmPasswordInput.style.display = 'block';  // 显示确认密码框
+        confirmPasswordInput.setAttribute('required', 'required');  // 恢复 required 属性
+        confirmPasswordRule.style.display='block';
+    }
+}
+
 
 // 用户名验证函数
 function validateUsername(username) {
@@ -61,6 +84,14 @@ function validatePassword(password) {
     return "密码安全度：弱";
 }
 
+// 确认密码验证函数
+function validateConfirmPassword(password, confirmPassword) {
+    if (password !== confirmPassword) {
+        return "两次输入的密码不一致";
+    }
+    return null; // Valid
+}
+
 // 用户名输入框事件
 usernameInput.addEventListener('focus', () => {
     usernameRule.textContent = "6~18位字符，只能包含英文字母、数字、下划线";
@@ -79,18 +110,32 @@ passwordInput.addEventListener('blur', () => {
     passwordRule.textContent = validationMessage;
 });
 
+// 确认密码输入框事件
+confirmPasswordInput.addEventListener('blur', () => {
+    const validationMessage = validateConfirmPassword(passwordInput.value, confirmPasswordInput.value);
+    confirmPasswordRule.textContent = validationMessage || "√";
+});
 
 authForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value.trim();
+    const confirmPassword = document.getElementById('confirm-password').value.trim();
     const endpoint = isLogin ? '/login' : '/register';
+
+  // 确认密码是否一致(只在注册时才进行此校验）
+  if (!isLogin &&password !== confirmPassword) {
+    messageDiv.textContent = "两次输入的密码不一致";
+    messageDiv.className = 'error';
+    return;
+ }
+
 
     const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password,confirmPassword}),
     });
 
     const data = await response.json();

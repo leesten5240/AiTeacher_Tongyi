@@ -31,10 +31,14 @@ def register():
     data = request.json
     username = data.get('username')
     password = data.get('password')
+    confirm_password = data.get('confirmPassword')  # 获取确认密码
 
-    if not username or not password:
-        return jsonify({'error': 'Username and password are required'}), 400
+    if not username or not password or not confirm_password:
+        return jsonify({'error': 'Username, password, and confirm password are required'}), 400
     
+    if password != confirm_password:
+        return jsonify({'error': 'Passwords do not match'}), 400
+
     username_validation_message = validate_username(username)
     if username_validation_message:
         return jsonify({'error': username_validation_message}), 400
