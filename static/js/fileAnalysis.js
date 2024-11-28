@@ -7,6 +7,21 @@ document.addEventListener('DOMContentLoaded', function() {
 	checkLoginStatus();
 });
 
+document.getElementById('logout').addEventListener('click', function() {
+	fetch('/logout', {
+			method: 'POST'
+		})
+		.then(response => {
+			if (response.ok) {
+				// 登出成功，跳转到登录页面
+				window.location.href = '/auth';
+			} else {
+				alert('Logout failed.');
+			}
+		})
+		.catch(error => {})
+})
+
 // 加载分析记录
 async function loadAnalysisRecords() {
 	const recordListElement = document.getElementById('recordList');

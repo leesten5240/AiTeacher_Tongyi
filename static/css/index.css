@@ -16,8 +16,8 @@
     	flex-direction: column;
     	justify-content: space-between;
     	align-items: center;
-    	width: 80%;
-    	max-width: 900px;
+    	width: 1000px;
+    	/* max-width: 900px; */
     	margin: 0 auto;
     	box-sizing: border-box;
     	margin-top: 50px;
@@ -46,13 +46,16 @@
 
     /* 会话列表项的默认样式 */
     .session-item {
-    	padding: 10px 15px;
-    	margin: 5px 0;
-    	border: 1px solid #ddd;
-    	border-radius: 5px;
-    	background-color: #fff;
-    	transition: box-shadow 0.3s ease, background-color 0.3s ease;
-    	cursor: pointer;
+		padding: 12px 18px;
+		margin: 6px 0;
+		border: 1px solid #ddd;
+		border-radius: 8px;
+		background-color: #fff;
+		transition: box-shadow 0.3s ease, background-color 0.3s ease;
+		cursor: pointer;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
     }
 
     /* 鼠标悬停时的样式 */
@@ -191,19 +194,6 @@
     	background-color: #aaa;
     }
 
-    /* 会话列表项样式 */
-    .session-item {
-    	display: flex;
-    	/* 使用 Flexbox 布局 */
-    	justify-content: space-between;
-    	/* 左右两侧对齐 */
-    	align-items: center;
-    	/* 垂直居中 */
-    	padding: 10px 15px;
-    	border-bottom: 1px solid #e0e0e0;
-    	position: relative;
-    	/* 确保内部的菜单可以正确定位 */
-    }
 
     /* 菜单容器样式 */
     .menu-container {

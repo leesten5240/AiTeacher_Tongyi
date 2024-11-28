@@ -372,7 +372,7 @@ async function loadSessions() {
 
 		data.sessions.forEach(session => {
 			const li = document.createElement('li');
-			li.textContent = `${session.session_name} (${new Date(session.created_at).toLocaleString()})`;
+			li.textContent = `${session.session_name} (${new Date(session.created_at).toLocaleString('en-US', { timeZone: 'UTC' })})`;
 
 			// 为每个会话项添加 class
 			li.classList.add('session-item');
