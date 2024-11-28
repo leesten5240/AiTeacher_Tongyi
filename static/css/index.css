@@ -28,11 +28,7 @@
 
     #session-ul {
       height: 100%;
-      overflow-y: auto;
-      scrollbar-width: thin; /* 精简滚动条 */
-      scrollbar-color: #007BFF #f4f4f4;
     }
-    
 
 /* 移除 <li> 标签前的小点 */
 .session-list {
@@ -310,6 +306,20 @@
   position: fixed; /* 固定位置 */
   left: 0;
 }
+
+    /* 滚动条样式优化 */
+    #session-list::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    #session-list::-webkit-scrollbar-thumb {
+      background-color: #ccc;
+      border-radius: 4px;
+    }
+
+    #session-list::-webkit-scrollbar-thumb:hover {
+      background-color: #aaa;
+    }
 
 /* 新建对话按钮样式 */
 #new-chat {
