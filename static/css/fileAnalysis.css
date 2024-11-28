@@ -4,13 +4,103 @@
 
 body {
 	margin: 0;
-	font-family: Arial, sans-serif;
+	font-family: 'Poppins', sans-serif; /* 更现代的字体 */
+	display: flex;
+}
+
+button {
+	font-size: 1rem;
+	border-radius: 5px;
+	background-color: #007BFF;
+	color: white;
+	border: none;
+	cursor: pointer;
+	flex-shrink: 0;
+	padding: 10px 20px;
+	transition: background-color 0.3s ease;
+}
+
+button:hover {
+	background-color: #0056b3;
+}
+
+/* 顶部区域样式 */
+#header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	background-color: #f5f5f5;
+	border-bottom: 1px solid #ddd;
+	height: 60px;
+	/* 设置固定高度 */
+	display: flex;
+	justify-content: space-between;
+	/* 左右对齐 */
+	align-items: center;
+	padding: 0 20px;
+	z-index: 1000;
+	/* 保证层级在其他元素之上 */
+}
+
+/* 用户信息样式 */
+#user-info {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+#user-avatar {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+}
+
+#user-name {
+	font-size: 16px;
+	font-weight: bold;
+	color: #333;
+}
+
+/* 登出按钮样式 */
+#logout {
+	width: 80px;
+	height: 40px;
+	background-color: #007BFF;
+	text-align: center;
+	line-height: 40px;
+	border-radius: 5px;
+	color: #fff;
+	cursor: pointer;
+}
+
+#logout:hover {
+	background-color: #0056b3;
+}
+
+.bodys {
+	margin-top: 70px;
+	/* 确保不被顶部挡住 */
 	display: flex;
 }
 
 .sidebar {
-	width: 250px;
-	background-color: #f0f0f0;
+
+	width: 300px;
+	padding: 10px;
+	height: calc(100vh - 95px);
+	/* 自动调整高度 */
+	overflow-y: auto;
+	background-color: #fff;
+	border-right: 1px solid #ddd;
+	box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+	position: fixed;
+	/* 固定位置 */
+	top: 70px;
+	left: 0;
+	bottom: 5px;
+
+	/* background-color: #f0f0f0; */
 	padding: 20px;
 	display: flex;
 	flex-direction: column;
@@ -21,15 +111,16 @@ body {
 	margin: 10px 0;
 	padding: 10px;
 	width: 100%;
-	background-color: #4a90e2;
-	color: white;
+	background-color: #007BFF;
+	color: #fff;
 	border: none;
 	border-radius: 5px;
 	cursor: pointer;
 }
 
 .sidebar button:hover {
-	background-color: #357abd;
+	background-color: #0056b3;
+	transform: scale(1.05);
 }
 
 .analysis_container {
@@ -112,6 +203,12 @@ body {
 	padding: 20px;
 	display: flex;
 	flex-direction: column;
+
+	margin-left: 320px;
+	/* 留出会话列表的宽度 */
+	padding: 20px;
+	height: calc(100vh - 70px);
+	/* 高度自适应 */
 }
 
 .content .actions {

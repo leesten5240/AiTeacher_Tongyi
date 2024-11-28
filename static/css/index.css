@@ -1,297 +1,325 @@
     /* 页面基础样式 */
-    html, body {
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(135deg, #f4f7fa, #e1ecf5);
-      color: #333;
-      margin: 0;
-      height: 100%;
-      overflow: hidden;
-      display: flex;
+    html,
+    body {
+    	font-family: 'Poppins', sans-serif; /* 更现代的字体 */
+    	background: linear-gradient(135deg, #f4f7fa, #e1ecf5);
+    	color: #333;
+    	margin: 0;
+    	height: 100%;
+    	overflow: hidden;
+    	display: flex;
     }
 
     /* 整体容器 */
     #chat-container {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      width: 80%;
-      max-width: 900px;
-      margin: 0 auto;
-      box-sizing: border-box;
-      margin-top: 50px;
-      margin-left: 320px; /* 留出会话列表的宽度 */
-      padding: 20px;
-      height: calc(100vh - 70px); /* 高度自适应 */
-      padding-bottom:0px;
+    	display: flex;
+    	flex-direction: column;
+    	justify-content: space-between;
+    	align-items: center;
+    	width: 80%;
+    	max-width: 900px;
+    	margin: 0 auto;
+    	box-sizing: border-box;
+    	margin-top: 50px;
+    	margin-left: 320px;
+    	/* 留出会话列表的宽度 */
+    	padding: 20px;
+    	height: calc(100vh - 70px);
+    	/* 高度自适应 */
+    	padding-bottom: 0px;
     }
 
     #session-ul {
       height: 100%;
     }
+    
 
-/* 移除 <li> 标签前的小点 */
-.session-list {
-	list-style-type: none; /* 去掉列表默认的点 */
-	padding: 0; /* 去掉列表的默认内边距 */
-	margin: 0; /* 去掉列表的默认外边距 */
-}
+    /* 移除 <li> 标签前的小点 */
+    .session-list {
+    	list-style-type: none;
+    	/* 去掉列表默认的点 */
+    	padding: 0;
+    	/* 去掉列表的默认内边距 */
+    	margin: 0;
+    	/* 去掉列表的默认外边距 */
+    }
 
-/* 会话列表项的默认样式 */
-.session-item {
-	padding: 10px 15px;
-	margin: 5px 0;
-	border: 1px solid #ddd;
-	border-radius: 5px;
-	background-color: #fff;
-	transition: box-shadow 0.3s ease, background-color 0.3s ease;
-	cursor: pointer;
-}
+    /* 会话列表项的默认样式 */
+    .session-item {
+    	padding: 10px 15px;
+    	margin: 5px 0;
+    	border: 1px solid #ddd;
+    	border-radius: 5px;
+    	background-color: #fff;
+    	transition: box-shadow 0.3s ease, background-color 0.3s ease;
+    	cursor: pointer;
+    }
 
-/* 鼠标悬停时的样式 */
-.session-item:hover {
-	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-	background-color: #f9f9f9;
-}
+    /* 鼠标悬停时的样式 */
+    .session-item:hover {
+    	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    	background-color: #f9f9f9;
+    }
 
-/* 选中的会话项样式 */
-.active-session {
-	box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
-	background-color: #e6f7ff;
-	border-color: #91d5ff;
-  font-weight: bold;
-}
+    /* 选中的会话项样式 */
+    .active-session {
+    	box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+    	background-color: #e6f7ff;
+    	border-color: #91d5ff;
+    	font-weight: bold;
+    }
 
 
 
-    #logout{
-      float:right;
-      width:60px;
-      height: 40px;
-      margin: 10px;
-      background-color: #007BFF;
-      text-align: center;
-      line-height: 40px;
-      border-radius: 5px;
-  }
-  
-  #logout:hover{
-      background-color: #0056b3;
-  }
+    #logout {
+    	float: right;
+    	width: 60px;
+    	height: 40px;
+    	margin: 10px;
+    	background-color: #007BFF;
+    	text-align: center;
+    	line-height: 40px;
+    	border-radius: 5px;
+    }
+
+
+    #logout:hover {
+    	background-color: #0056b3;
+    }
 
     /* 聊天记录区域 */
     #chat-history {
-      flex-grow: 1;
-      width: 100%;
-      overflow-y: auto;
-      margin-bottom: 10px;
-      padding: 10px;
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
-      gap: 10px; /* 消息间距 */
-      height: 100%;
+    	flex-grow: 1;
+    	width: 100%;
+    	overflow-y: auto;
+    	margin-bottom: 10px;
+    	padding: 10px;
+    	background-color: #fff;
+    	border-radius: 8px;
+    	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    	display: flex;
+    	flex-direction: column;
+    	gap: 10px;
+    	/* 消息间距 */
+    	height: 100%;
     }
-    
+
     /* 消息样式 */
     .message {
-      padding: 10px 15px;
-      border-radius: 10px;
-      max-width: 75%;
-      word-wrap: break-word;
-      line-height: 1.5;
-      display: inline-block; /* 使消息内容更紧凑 */
+    	padding: 10px 15px;
+    	border-radius: 10px;
+    	max-width: 75%;
+    	word-wrap: break-word;
+    	line-height: 1.5;
+    	display: inline-block;
+    	/* 使消息内容更紧凑 */
     }
-    
+
     /* 用户消息：靠右对齐 */
     .user-message {
-      background-color: #d1f7d1;
-      align-self: flex-end; /* 右对齐 */
-      text-align: left; /* 文本右对齐 */
+    	background-color: #d1f7d1;
+    	align-self: flex-end;
+    	/* 右对齐 */
+    	text-align: left;
+    	/* 文本右对齐 */
     }
-    
+
     /* 助手消息：靠左对齐 */
     .assistant-message {
-      background-color: #f0f0f0;
-      align-self: flex-start; /* 左对齐 */
-      text-align: left; /* 文本左对齐 */
+    	background-color: #f0f0f0;
+    	align-self: flex-start;
+    	/* 左对齐 */
+    	text-align: left;
+    	/* 文本左对齐 */
     }
-    
+
     /* 图片样式 */
     .message img {
-      max-width: 100%;
-      border-radius: 8px;
-      margin-top: 10px;
+    	max-width: 100%;
+    	border-radius: 8px;
+    	margin-top: 10px;
     }
-    
+
     /* 输入表单样式 */
     form {
-      width: 100%;
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      height: 40px;
+    	width: 100%;
+    	display: flex;
+    	gap: 10px;
+    	align-items: center;
+    	height: 40px;
     }
 
-    input[type="text"], input[type="file"], button {
-      padding: 10px;
-      border-radius: 5px;
-      font-size: 1rem;
-      border: 1px solid #ccc;
+    input[type="text"],
+    input[type="file"],
+    button {
+    	padding: 10px;
+    	border-radius: 5px;
+    	font-size: 1rem;
+    	border: 1px solid #ccc;
     }
 
-    input[type="text"], input[type="file"] {
-      flex: 2;
+    input[type="text"],
+    input[type="file"] {
+    	flex: 2;
     }
 
     button {
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      cursor: pointer;
-      flex-shrink: 0;
-      padding: 10px 20px;
-      transition: background-color 0.3s ease;
+    	background-color: #007BFF;
+    	color: white;
+    	border: none;
+    	cursor: pointer;
+    	flex-shrink: 0;
+    	padding: 10px 20px;
+    	transition: background-color 0.3s ease;
     }
 
     button:hover {
-      background-color: #0056b3;
+    	background-color: #0056b3;
     }
 
     /* 滚动条样式优化 */
     #chat-history::-webkit-scrollbar {
-      width: 8px;
+    	width: 8px;
     }
 
     #chat-history::-webkit-scrollbar-thumb {
-      background-color: #ccc;
-      border-radius: 4px;
+    	background-color: #ccc;
+    	border-radius: 4px;
     }
 
     #chat-history::-webkit-scrollbar-thumb:hover {
-      background-color: #aaa;
+    	background-color: #aaa;
     }
 
-/* 会话列表项样式 */
-.session-item {
-    display: flex; /* 使用 Flexbox 布局 */
-    justify-content: space-between; /* 左右两侧对齐 */
-    align-items: center; /* 垂直居中 */
-    padding: 10px 15px;
-    border-bottom: 1px solid #e0e0e0;
-    position: relative; /* 确保内部的菜单可以正确定位 */
-}
+    /* 会话列表项样式 */
+    .session-item {
+    	display: flex;
+    	/* 使用 Flexbox 布局 */
+    	justify-content: space-between;
+    	/* 左右两侧对齐 */
+    	align-items: center;
+    	/* 垂直居中 */
+    	padding: 10px 15px;
+    	border-bottom: 1px solid #e0e0e0;
+    	position: relative;
+    	/* 确保内部的菜单可以正确定位 */
+    }
 
-/* 菜单容器样式 */
-.menu-container {
-    margin-left: auto; /* 将三个点按钮推到最右侧 */
-    position: relative;
-}
+    /* 菜单容器样式 */
+    .menu-container {
+    	margin-left: auto;
+    	/* 将三个点按钮推到最右侧 */
+    	position: relative;
+    }
 
-/* 三个点按钮样式 */
-.menu-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    padding: 5px;
-    color: #666;
-    transition: color 0.3s;
-}
+    /* 三个点按钮样式 */
+    .menu-button {
+    	background: none;
+    	border: none;
+    	cursor: pointer;
+    	font-size: 16px;
+    	padding: 5px;
+    	color: #666;
+    	transition: color 0.3s;
+    }
 
-.menu-button:hover {
-    color: #333; /* 鼠标悬停颜色变化 */
-}
+    .menu-button:hover {
+    	color: #333;
+    	/* 鼠标悬停颜色变化 */
+    }
 
-/* 菜单样式 */
-.menu {
-    display: none; /* 默认隐藏菜单 */
-    position: absolute;
-    top: 30px; /* 根据需要调整位置 */
-    right: 0;
-    background: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-    overflow: hidden;
-    z-index: 1000;
-}
+    /* 菜单样式 */
+    .menu {
+    	display: none;
+    	/* 默认隐藏菜单 */
+    	position: absolute;
+    	top: 30px;
+    	/* 根据需要调整位置 */
+    	right: 0;
+    	background: #fff;
+    	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    	border-radius: 4px;
+    	overflow: hidden;
+    	z-index: 1000;
+    }
 
-/* 菜单项样式 */
-.menu-item {
-    padding: 10px 20px;
-    cursor: pointer;
-    white-space: nowrap;
-}
+    /* 菜单项样式 */
+    .menu-item {
+    	padding: 10px 20px;
+    	cursor: pointer;
+    	white-space: nowrap;
+    }
 
-.menu-item:hover {
-    background: #f0f0f0;
-}
+    .menu-item:hover {
+    	background: #f0f0f0;
+    }
 
-/* 菜单显示时的样式 */
-.menu.visible {
-    display: block;
-}
+    /* 菜单显示时的样式 */
+    .menu.visible {
+    	display: block;
+    }
 
 
-/* 会话列表容器样式（可选） */
-#sessions {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
+    /* 会话列表容器样式（可选） */
+    #sessions {
+    	list-style: none;
+    	padding: 0;
+    	margin: 0;
+    }
 
-/* 顶部区域样式 */
-#header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #ddd;
-  height: 60px; /* 设置固定高度 */
-  display: flex;
-  justify-content: space-between; /* 左右对齐 */
-  align-items: center;
-  padding: 0 20px;
-  z-index: 1000; /* 保证层级在其他元素之上 */
-}
+    /* 顶部区域样式 */
+    #header {
+    	position: fixed;
+    	top: 0;
+    	left: 0;
+    	right: 0;
+    	background-color: #f5f5f5;
+    	border-bottom: 1px solid #ddd;
+    	height: 60px;
+    	/* 设置固定高度 */
+    	display: flex;
+    	justify-content: space-between;
+    	/* 左右对齐 */
+    	align-items: center;
+    	padding: 0 20px;
+    	z-index: 1000;
+    	/* 保证层级在其他元素之上 */
+    }
 
-/* 用户信息样式 */
-#user-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+    /* 用户信息样式 */
+    #user-info {
+    	display: flex;
+    	align-items: center;
+    	gap: 10px;
+    }
 
-#user-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-}
+    #user-avatar {
+    	width: 40px;
+    	height: 40px;
+    	border-radius: 50%;
+    }
 
-#user-name {
-  font-size: 16px;
-  font-weight: bold;
-  color: #333;
-}
+    #user-name {
+    	font-size: 16px;
+    	font-weight: bold;
+    	color: #333;
+    }
 
-/* 登出按钮样式 */
-#logout {
-  width: 80px;
-  height: 40px;
-  background-color: #007BFF;
-  text-align: center;
-  line-height: 40px;
-  border-radius: 5px;
-  color: #fff;
-  cursor: pointer;
-}
+    /* 登出按钮样式 */
+    #logout {
+    	width: 80px;
+    	height: 40px;
+    	background-color: #007BFF;
+    	text-align: center;
+    	line-height: 40px;
+    	border-radius: 5px;
+    	color: #fff;
+    	cursor: pointer;
+    }
 
-#logout:hover {
-  background-color: #0056b3;
-}
+    #logout:hover {
+    	background-color: #0056b3;
+    }
 
 /* 历史会话区域 */
 #session-list {
@@ -321,32 +349,33 @@
       background-color: #aaa;
     }
 
-/* 新建对话按钮样式 */
-#new-chat {
-  
-  bottom: 20px;
-  left: 340px; /* 避开会话列表 */
-  background-color: #007BFF;
-  color: #fff;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
+    /* 新建对话按钮样式 */
+    #new-chat {
 
-#new-chat:hover {
-  background-color: #0056b3;
-  transform: scale(1.05);
-}
+    	bottom: 20px;
+    	left: 340px;
+    	/* 避开会话列表 */
+    	background-color: #007BFF;
+    	color: #fff;
+    	padding: 10px 20px;
+    	border: none;
+    	border-radius: 5px;
+    	cursor: pointer;
+    }
 
-#chat-header{
-  display: flex;
-  justify-content:space-between;
-  align-items: center;
-  
-}
+    #new-chat:hover {
+    	background-color: #0056b3;
+    	transform: scale(1.05);
+    }
 
-#history-session{
-  font-weight: bold;
-  font-size: large;
-}
+    #chat-header {
+    	display: flex;
+    	justify-content: space-between;
+    	align-items: center;
+
+    }
+
+    #history-session {
+    	font-weight: bold;
+    	font-size: large;
+    }

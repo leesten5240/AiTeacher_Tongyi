@@ -1,85 +1,100 @@
 body {
-    font-family: Arial, sans-serif;
-    background: #f4f7fa;
+    font-family: 'Poppins', sans-serif; /* 更现代的字体 */
+    background: linear-gradient(135deg, #f4f7fa, #e0e7ff); /* 渐变背景 */
     color: #333;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
-}
-
-#auth-container {
+  }
+  
+  #auth-container {
     background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    max-width: 400px;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* 增加阴影 */
+    max-width: 450px;
     width: 100%;
-}
-
-h2 {
-    margin-top: 0;
     text-align: center;
-}
-
-form {
+  }
+  
+  h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-}
-
-input {
-    padding: 10px;
+    gap: 20px;
+  }
+  
+  .input-group {
+    position: relative;
+    margin-bottom: 10px;
+  }
+  
+  input {
+    padding: 12px;
     font-size: 1rem;
     border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-input:focus {
+    border-radius: 6px;
+    width: 100%;
+    transition: all 0.3s ease; /* 动效 */
+  }
+  
+  input:focus {
     outline: none;
     border-color: #007BFF;
-}
-
-button {
-    padding: 10px;
-    font-size: 1rem;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+  
+  button {
+    padding: 12px;
+    font-size: 1.1rem;
     color: #fff;
     background-color: #007BFF;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
-}
-
-button:hover {
+    transition: all 0.3s ease;
+  }
+  
+  button:hover {
     background-color: #0056b3;
-}
-
-#toggle-auth {
-    text-align: center;
-    margin-top: 10px;
+    transform: translateY(-2px); /* 悬停时按钮上升 */
+  }
+  
+  #toggle-auth {
+    margin-top: 20px;
     color: #007BFF;
     cursor: pointer;
-}
-
-#toggle-auth:hover {
     text-decoration: underline;
-}
-
-.rule-text {
+  }
+  
+  #toggle-auth:hover {
+    color: #0056b3;
+  }
+  
+  .rule-text {
     font-size: 12px;
     color: #888;
     margin-top: 5px;
   }
-
-.error {
+  
+  .error {
     color: red;
     font-size: 0.9rem;
-    text-align: center;
-}
-
-.success {
+    margin-top: 10px;
+  }
+  
+  .success {
     color: green;
     font-size: 0.9rem;
-    text-align: center;
-}
+    margin-top: 10px;
+  }
+  
+
+  
