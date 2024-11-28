@@ -150,12 +150,6 @@ authForm.addEventListener('submit', async (event) => {
 		messageDiv.className = 'success';
 
 		if (isLogin) {
-			if (data.session_id) {
-				localStorage.setItem('session_id', data.session_id); // 将 session_id 存储到 localStorage
-			} else {
-				console.warn("后端未返回 session_id！");
-			}
-
 			// 登录成功后跳转主页
 			setTimeout(() => {
 				window.location.href = '/';

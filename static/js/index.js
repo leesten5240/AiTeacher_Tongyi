@@ -116,7 +116,50 @@ function addMessageToHistory(message) {
 }
 
 // 发送消息到后端
-function sendMessage(message) {
+async function sendMessage(message) {
+
+	const sessionId = localStorage.getItem('session_id');
+
+	// 判断 localStorage 是否有 session_id
+	if (!isSessionIdValid(sessionId)) {
+		isFirstMessage = true; // 标记为第一次对话
+
+		// 发送 AJAX 请求通知后端
+		try {
+			const response = await fetch('/new_session', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					session_name: '新对话',
+				}),
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP 错误! 状态码: ${response.status}`);
+			}
+
+			const data = await response.json();
+			console.log(`新对话已开始，Chat ID: ${data.session_id}`);
+			if (data.session_id) {
+				localStorage.setItem('session_id', data.session_id);
+			} else {
+				console.error('后端返回的 session_id 无效:', data);
+			};
+			await loadSessions();
+		} catch (error) {
+			console.error('新对话请求失败:', error);
+		};
+	} else {
+		console.log('session_id already exists');
+	}
+
+	await sendProcessRequest(message);
+}
+
+// 发送 /process 请求
+async function sendProcessRequest(message) {
 	if (isFirstMessage) {
 		chatHistory.unshift(initialPrompt);
 		isFirstMessage = false;
@@ -124,7 +167,8 @@ function sendMessage(message) {
 
 	const sessionId = localStorage.getItem("session_id");
 
-	fetch("/process", {
+	try {
+		const response = await fetch("/process", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -133,26 +177,25 @@ function sendMessage(message) {
 			body: JSON.stringify({
 				chat_history: chatHistory
 			})
-		})
-		.then((response) => response.json())
-		.then((data) => {
-			if (data.response) {
-				const assistantMessage = {
-					role: "assistant",
-					content: [{
-						type: "text",
-						text: formatMathResponse(data.response)
-					}]
-				};
-				addMessageToHistory(assistantMessage);
-			} else {
-				showError(`服务器错误：${data.error}`);
-			}
-		})
-		.catch((error) => {
-			console.error("请求错误:", error);
-			showError("消息发送失败，请检查网络连接。");
 		});
+
+		const data = await response.json();
+		if (data.response) {
+			const assistantMessage = {
+				role: "assistant",
+				content: [{
+					type: "text",
+					text: formatMathResponse(data.response)
+				}]
+			};
+			addMessageToHistory(assistantMessage);
+		} else {
+			showError(`服务器错误：${data.error}`);
+		}
+	} catch (error) {
+		console.error("请求错误:", error);
+		showError("消息发送失败，请检查网络连接。");
+	}
 }
 
 // 格式化数学公式
@@ -295,7 +338,11 @@ document.getElementById('new-chat').addEventListener('click', function() {
 				messageDiv.textContent = '新对话已开始！';
 				chatHistoryDiv.appendChild(messageDiv);
 				chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight;
-				localStorage.setItem('session_id', data.session_id);
+				if (data.session_id) {
+					localStorage.setItem('session_id', data.session_id);
+				} else {
+					console.error('后端返回的 session_id 无效:', data);
+				};
 				loadSessions();
 			})
 			.catch((error) => {
@@ -331,7 +378,8 @@ async function loadSessions() {
 			li.classList.add('session-item');
 
 			//防止删除会话记录后，无法选中最新的一条会话记录
-			if (localStorage.getItem('session_id') == null) {
+			const sessionId = localStorage.getItem('session_id')
+			if (!isSessionIdValid(sessionId)) {
 				localStorage.setItem('session_id', session.id)
 			}
 
@@ -401,7 +449,7 @@ async function loadSessions() {
 			// 点击菜单按钮显示/隐藏菜单
 			menuButton.addEventListener('click', (e) => {
 				e.stopPropagation();
-				document.querySelectorAll('.menu').forEach(m=>m.classList.remove('visible'));
+				document.querySelectorAll('.menu').forEach(m => m.classList.remove('visible'));
 				menu.classList.toggle('visible');
 			});
 
@@ -499,4 +547,8 @@ function renderChatHistory() {
 	const chatHistoryDiv = document.getElementById('chat-history');
 	chatHistoryDiv.innerHTML = '';
 	chatHistory.forEach(addMessageToHistory);
+}
+
+function isSessionIdValid(sessionId) {
+	return sessionId && sessionId !== 'null' && sessionId !== 'undefined';
 }
