@@ -4,7 +4,8 @@
 
 body {
 	margin: 0;
-	font-family: 'Poppins', sans-serif; /* 更现代的字体 */
+	font-family: 'Poppins', sans-serif;
+	/* 更现代的字体 */
 	display: flex;
 }
 
@@ -20,8 +21,13 @@ button {
 	transition: background-color 0.3s ease;
 }
 
-button:hover {
+button:not(:disabled):hover {
 	background-color: #0056b3;
+}
+
+button:disabled {
+	background-color: #EEEEEE;
+	color: #ABABAB;
 }
 
 /* 顶部区域样式 */

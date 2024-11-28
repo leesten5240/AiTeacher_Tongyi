@@ -61,7 +61,12 @@ async function loadAnalysisRecords() {
 			recordButton.textContent = record.filename;
 			recordButton.title = record.filename;
 			recordButton.className = 'record-button';
-			recordContainer.onclick = (e) => loadRecord(record); // 点击加载记录
+
+			recordContainer.addEventListener('click', (event) => { // 点击加载记录
+				const recordId = recordContainer.dataset.recordId;
+				loadRecord(recordId, recordContainer);
+			})
+
 
 			// 删除图标按钮
 			const deleteIcon = document.createElement('img');
@@ -89,7 +94,7 @@ async function loadAnalysisRecords() {
 }
 
 // 点击记录按钮时加载记录内容
-function loadRecord(record) {
+async function loadRecord(recordId, recordElement) {
 	const chartElement = document.getElementById('chart');
 	const analysisResultElement = document.getElementById('analysisResult');
 	const analysisType = document.getElementById('analysisType');
@@ -97,35 +102,55 @@ function loadRecord(record) {
 	//清空分析
 	clearAnalysis();
 
-	//更新action部分内容
-	analysisType.value = record.analysis_type;
+	const response = await fetch(`/analysis_record/${recordId}`);
+	if (response.ok) {
+		const record = await response.json();
+		//更新action部分内容
+		analysisType.value = record.analysis_type;
 
-	//切换只读模式
-	actionDisabled();
+		//切换只读模式
+		actionDisabled();
 
-	// 渲染图表
-	const chart = echarts.init(chartElement);
-	chart.setOption(JSON.parse(record.chart_option)); // 加载图表配置
+		// 渲染图表
+		const chart = echarts.init(chartElement);
+		chart.setOption(JSON.parse(record.chart_option)); // 加载图表配置
 
-	// 显示分析结果
-	const markdownContent = record.ai_analysis || '加载中...';
-	const htmlContent = marked.parse(markdownContent);
-	analysisResultElement.innerHTML = htmlContent;
+		// 显示分析结果
+		if (record.ai_analysis) {
+			// 如果已有AI分析结果，直接显示
+			const htmlContent = marked.parse(record.ai_analysis);
+			analysisResultElement.innerHTML = htmlContent;
+		} else {
+			// 如果AI分析还没有结果，则显示加载中
+			analysisResultElement.innerHTML = '加载中...';
+		}
 
-	// 处理选中状态
-	const recordListElement = document.getElementById('recordList');
-	const recordItems = recordListElement.querySelectorAll('.record-item');
-	recordItems.forEach(item => item.classList.remove('active-record')); // 移除所有记录的选中样式
-	event.currentTarget.classList.add('active-record'); // 给当前选中的记录添加样式
+		// 处理选中状态
+		const recordListElement = document.getElementById('recordList');
+		const recordItems = recordListElement.querySelectorAll('.record-item');
+		recordItems.forEach(item => item.classList.remove('active-record')); // 移除所有记录的选中样式
+
+		// 给当前选中的记录添加样式
+		if (recordElement) {
+			recordElement.classList.add('active-record');
+		}
+	}
 }
 
 // 清空分析结果以开始新分析
 function clearAnalysis() {
 	const chartElement = document.getElementById('chart');
 	const analysisResultElement = document.getElementById('analysisResult');
+	const fileInput = document.getElementById('fileInput');
+	const analysisTypeSelector = document.getElementById('analysisType');
 
 	//切换可上传文件状态；
 	actionEnabled();
+
+	//清空actions
+	fileInput.value = '';
+	analysisTypeSelector.selectedIndex = 0;
+
 
 	// 清空图表和分析结果
 	const chart = echarts.init(chartElement);
@@ -206,7 +231,7 @@ async function startAnalysis() {
 			return;
 		}
 
-		//刷新分析记录
+		// 立即生成并选中新的分析记录
 		loadAnalysisRecords();
 
 		// 请求 AI 分析
@@ -221,7 +246,12 @@ async function startAnalysis() {
 		if (analysisResponse.ok) {
 			const markdownContent = analysisData.analysis;
 			const htmlContent = marked.parse(markdownContent);
-			analysisResultElement.innerHTML = htmlContent;
+			// 检查当前显示的是否是新生成的记录
+			const activeRecord = document.querySelector('.record-item.active-record');
+			if (activeRecord && activeRecord.dataset.recordId === String(currentRecordId)) {
+				// 如果当前选中的记录是刚刚生成的，才更新分析结果
+				analysisResultElement.innerHTML = htmlContent;
+			}
 		} else {
 			alert('AI 分析请求失败');
 			console.error(analysisData.error);
@@ -231,8 +261,7 @@ async function startAnalysis() {
 		console.error('请求失败:', error);
 		alert('请求失败，请检查网络或联系管理员');
 	} finally {
-		// 恢复按钮状态
-		analyzeButton.disabled = false;
+		// 恢复按钮文字
 		analyzeButton.innerText = '分析';
 	}
 }
@@ -287,4 +316,11 @@ async function checkLoginStatus() {
 			userNameElement.textContent = data.user; // 假设后端返回的用户名是 data.user.name
 		}
 	}
+}
+
+function newAnalysis() {
+	clearAnalysis();
+	const recordListElement = document.getElementById('recordList');
+	const recordItems = recordListElement.querySelectorAll('.record-item');
+	recordItems.forEach(item => item.classList.remove('active-record')); // 移除所有记录的选中样式
 }
