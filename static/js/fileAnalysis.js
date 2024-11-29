@@ -87,6 +87,14 @@ async function loadAnalysisRecords() {
 			recordListElement.appendChild(recordContainer);
 
 		});
+
+		// 调用选中状态应用的函数，确保选中当前记录
+		const activeRecord = document.querySelector('.record-item.active-record');
+		if (activeRecord) {
+			// 如果有选中的记录，重新应用选中状态
+			activeRecord.classList.add('active-record');
+		}
+
 	} catch (error) {
 		console.error('请求失败:', error);
 		recordListElement.innerHTML = '<div>加载失败，请检查网络。</div>';
@@ -122,7 +130,7 @@ async function loadRecord(recordId, recordElement) {
 			analysisResultElement.innerHTML = htmlContent;
 		} else {
 			// 如果AI分析还没有结果，则显示加载中
-			analysisResultElement.innerHTML = '加载中...';
+			analysisResultElement.innerHTML = '<div class="loading"></div> 分析中……';
 		}
 
 		// 处理选中状态
@@ -232,7 +240,13 @@ async function startAnalysis() {
 		}
 
 		// 立即生成并选中新的分析记录
-		loadAnalysisRecords();
+		await loadAnalysisRecords();
+
+		// 获取新生成的记录的 DOM 元素
+		const newRecordElement = document.querySelector(`[data-record-id="${currentRecordId}"]`);
+
+		// 调用 loadRecord，传递记录ID和DOM元素
+		await loadRecord(currentRecordId, newRecordElement);
 
 		// 请求 AI 分析
 		formData.append('record_id', currentRecordId);
