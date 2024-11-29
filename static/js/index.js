@@ -16,12 +16,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 document.getElementById('logout').addEventListener('click', function() {
+	
 	fetch('/logout', {
 			method: 'POST'
 		})
 		.then(response => {
 			if (response.ok) {
-				// 登出成功，跳转到登录页面
+				// 登出成功，清除本地存储
+				localStorage.clear();
+				//跳转到登录页面
 				window.location.href = '/auth';
 			} else {
 				alert('Logout failed.');

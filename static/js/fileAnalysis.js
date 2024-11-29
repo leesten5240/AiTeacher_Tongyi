@@ -13,7 +13,9 @@ document.getElementById('logout').addEventListener('click', function() {
 		})
 		.then(response => {
 			if (response.ok) {
-				// 登出成功，跳转到登录页面
+				// 登出成功，清除本地存储
+				localStorage.clear();
+				//跳转到登录页面
 				window.location.href = '/auth';
 			} else {
 				alert('Logout failed.');

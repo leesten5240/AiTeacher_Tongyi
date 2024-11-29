@@ -17,7 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
 	updateConfirmPasswordVisibility(); // 初始化确认密码框的显示状态
 });
 
-toggleAuth.addEventListener('click', () => {
+toggleAuth.addEventListener('click', changeIsLogin);
+
+//切换登录和注册模式
+function changeIsLogin() {
 	isLogin = !isLogin;
 	formTitle.textContent = isLogin ? '登录' : '注册';
 	authButton.textContent = isLogin ? '登录' : '注册';
@@ -27,7 +30,7 @@ toggleAuth.addEventListener('click', () => {
 	messageDiv.textContent = '';
 
 	updateConfirmPasswordVisibility(); // 切换模式时更新确认密码框状态
-});
+}
 
 // 更新确认密码框的显示状态和required属性
 function updateConfirmPasswordVisibility() {
@@ -146,14 +149,18 @@ authForm.addEventListener('submit', async (event) => {
 	const data = await response.json();
 
 	if (response.ok) {
-		messageDiv.textContent = data.message;
-		messageDiv.className = 'success';
 
 		if (isLogin) {
+			messageDiv.textContent = data.message;
+			messageDiv.className = 'success';
 			// 登录成功后跳转主页
 			setTimeout(() => {
 				window.location.href = '/';
 			}, 1000);
+		}else{
+			changeIsLogin();
+			messageDiv.textContent = data.message;
+			messageDiv.className = 'success';
 		}
 	} else {
 		messageDiv.textContent = data.error;

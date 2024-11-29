@@ -34,10 +34,10 @@ def register():
     confirm_password = data.get('confirmPassword')  # 获取确认密码
 
     if not username or not password or not confirm_password:
-        return jsonify({'error': 'Username, password, and confirm password are required'}), 400
+        return jsonify({'error': '用户名或密码不能为空'}), 400
     
     if password != confirm_password:
-        return jsonify({'error': 'Passwords do not match'}), 400
+        return jsonify({'error': '两次输入的密码不一致'}), 400
 
     username_validation_message = validate_username(username)
     if username_validation_message:
@@ -57,12 +57,12 @@ def register():
             #检查用户名是否已存在
             cursor.execute("SELECT * FROM users WHERE username=%s", (username,))
             if cursor.fetchone():
-                return jsonify({'error': 'Username already exists'}), 400
+                return jsonify({'error': '用户名已存在，请登录'}), 400
             
             #插入新用户
             cursor.execute("INSERT INTO users (username, password_hash) VALUES (%s, %s)", (username, password_hash))
             conn.commit()
-        return jsonify({'message': 'Registration successful'}), 200
+        return jsonify({'message': '注册成功！'}), 200
     finally:
         conn.close()
 
@@ -87,7 +87,6 @@ def login():
             # #设置会话
             session['username'] = username
             session['user_id']=user['id']
-
             # return jsonify({'message': '登录成功！', 'session_id': session_id}), 200
             return jsonify({'message': '登录成功！'}), 200
     except Exception as e:
