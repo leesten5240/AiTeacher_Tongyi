@@ -4,7 +4,12 @@ let isFirstMessage = true;
 // 初始化提示
 const initialPrompt = {
 	role: "system",
-	content: "你是一位专注于学习辅助的学习助手，专门回答与学习相关的问题。如果用户提出的问题不属于学习范畴，请礼貌地拒绝回答，并提醒用户只提问与学习相关的内容。 任务要求： - 在回答问题时，请按照步骤进行解答，保持语言简洁明了。 - 对于数学、物理等理科问题，尽量减少文字描述，更多地使用定理、公式来解答。 - 使用LaTeX语法展示所有公式和定理，并确保它们被$符号包裹起来以正确显示。 现在，请准备好根据上述指导原则来帮助用户解决他们的学习难题。"
+	content: `你是一位专注于学习辅助的学习助手，专门回答与学习相关的问题。
+	如果用户提出的问题不属于学习范畴，请礼貌地拒绝回答，并提醒用户只提问与学习相关的内容。 
+	任务要求： - 在回答问题时，请按照步骤进行解答，保持语言简洁明了。 
+	- 对于数学、物理等理科问题，尽量减少文字描述，更多地使用定理、公式来解答。 
+	- 使用LaTeX语法展示所有公式和定理，并确保它们被$符号包裹起来以正确显示。 
+	现在，请准备好根据上述指导原则来帮助用户解决他们的学习难题。`
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -16,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 document.getElementById('logout').addEventListener('click', function() {
-	
+
 	fetch('/logout', {
 			method: 'POST'
 		})
@@ -379,7 +384,8 @@ async function loadSessions() {
 
 		data.sessions.forEach(session => {
 			const li = document.createElement('li');
-			li.textContent = `${session.session_name} (${new Date(session.created_at).toLocaleString('en-US', { timeZone: 'UTC' })})`;
+			li.textContent =
+				`${session.session_name} (${new Date(session.created_at).toLocaleString('en-US', { timeZone: 'UTC' })})`;
 
 			// 为每个会话项添加 class
 			li.classList.add('session-item');

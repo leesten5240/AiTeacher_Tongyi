@@ -123,6 +123,9 @@ async function loadRecord(recordId, recordElement) {
 
 		// 渲染图表
 		const chart = echarts.init(chartElement);
+		// 重新调整图表大小
+		chart.resize(); // 重新计算图表尺寸
+
 		chart.setOption(JSON.parse(record.chart_option)); // 加载图表配置
 
 		// 显示分析结果
